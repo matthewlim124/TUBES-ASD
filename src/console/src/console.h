@@ -6,10 +6,10 @@
 #include "../../ADT/ListLagu/listlagu.h"
 
 void readCommand(); // Membaca Command dari User
-void defaultSave(); // Meload file save default
+boolean defaultSave(); // Meload file save default
 boolean loadSave(char *filePath); // Meload file save 
 boolean compareString(char *a, char *b);
 void quitCommand(int *stopStatus);
-void saveCommand(); 
+void saveCommand();  
 
 #endif

@@ -11,13 +11,19 @@ void readCommand(){
   int stopStatus =0;
    while(!stopStatus){
     printf(">> ");
-    fromInput=true; 
     STARTWORD();
     printf("Iterasi Ke - %d \n",i);
     printf("=================================================\n \n");
     i++;
     if(compareString(currentWord.TabWord, "START")){
-
+      boolean success = defaultSave();
+      if(success){
+        printf("START berhasil dijalankan\n");
+      }
+      else{
+        printf("Start gagal dijalankan");
+        return; 
+      }
     }
     else if(compareString("SAVE", currentWord.TabWord)){
       saveCommand();
@@ -59,7 +65,7 @@ boolean loadSave(char *filePath){
   else{
     START();
     int index = currentChar - '0'; 
-    STARTWORD();
+    STARTWORD(); // Rading Empty Line 
     for(int i =0 ;i < index; i++){
       Lagu tempLagu = MakeLagu();
       // Memasukkan save Penyanyi ke list Penyanyi
@@ -106,10 +112,73 @@ boolean loadSave(char *filePath){
   }
 }
 
-void defaultSave(){
+boolean defaultSave(){
+  printf("Default Save\n|=======================|\n");
+  FILE *file = freopen("../../../save/DefSave.txt", "r", stdin);
+  if(NULL == file){
+    printf("Default save missing\n");
+    return false; 
+  }
+  else{
+    START();
+    int idxP = currentChar - '0';
+    printf("Jumlah Penyanyi : %c\n", currentChar);
+    STARTWORD();
+    for(int k = 0; k < idxP; k++){
+      START(); // Reading num of albums
+      printf("Jumlah Album : %c\n", currentChar);
+      int idxA = currentChar -'0';
+      // Reading Penyanyi
+      Word space;
+      STARTWORD();
+      Word tempPenyanyi = currentWord;
+      while(!isEndWord() && !EOP){
+        ADVWORD();
+        SetWord(&space, " ");
+        ConcatWord(currentWord, &space);
+        ConcatWord(space, &tempPenyanyi);
+      }
+      printf("Penyanyi : %s\n", tempPenyanyi.TabWord);
 
+      for(int j = 0; j < idxA; j++){
+        START(); // Reading num of titles
+        printf("Jumlah Judul : %c\n", currentChar);
+        int idxJ = currentChar - '0'; 
+
+        // Membaca Album 
+        STARTWORD();
+        Word tempAlbum = currentWord;
+        Word space; 
+        while(!isEndWord() && !EOP){
+          ADVWORD();
+          SetWord(&space, " ");
+          ConcatWord(currentWord, &space);
+          ConcatWord(space, &tempAlbum);
+        }
+        printf("Album : %s\n", tempAlbum.TabWord);
+
+        //Reading titles 
+        for(int i =0; i< idxJ; i++){ 
+          STARTWORD(); // Reading empty space
+          Word tempJudul = currentWord;
+          Word space;
+          while(!isEndWord() && !EOP){
+            ADVWORD();
+            SetWord(&space, " ");
+            ConcatWord(currentWord, &space);
+            ConcatWord(space, &tempJudul);
+          }
+          printf("Judul : %s\n", tempJudul.TabWord);  
+        }
+      }
+    }
+  /*Notes program akan error (inifinite loop) 
+   * apabila pada save default tidak diakhiri \n
+  */ 
+  freopen("CONIN$", "r", stdin);
+  return true; 
+  }
 }
-
 void saveCommand(){
   ADVWORD();
   printf("File berhasl disimpan\n");
