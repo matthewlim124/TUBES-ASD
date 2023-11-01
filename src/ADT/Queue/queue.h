@@ -4,13 +4,14 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include "boolean.h"
+#include "../boolean.h"
+#include "../Lagu/lagu.h"
 
 #define IDX_UNDEF -1
 #define CAPACITY 100
 
 /* Definisi elemen dan address */
-typedef int ElType;
+typedef Lagu ElType;
 typedef struct {
 	ElType buffer[CAPACITY]; 
 	int idxHead;

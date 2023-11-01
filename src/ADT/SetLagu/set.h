@@ -13,7 +13,7 @@ void CreateSet(SetLagu *s);
 
 boolean IsEmpty(SetLagu s); 
 
-int Length(SetLagu s);
+int LengthSet(SetLagu s);
 
 void AddSet(SetLagu *s, Lagu l); 
 

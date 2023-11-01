@@ -4,6 +4,8 @@
 #include "../../ADT/boolean.h"
 #include "../../ADT/Word/word.h"
 #include "../../ADT/ListLagu/listlagu.h"
+#include "../../ADT/SetLagu/set.h"
+#include "../../ADT/Queue//queue.h"
 
 void readCommand(); // Membaca Command dari User
 boolean defaultSave(); // Meload file save default
@@ -11,5 +13,5 @@ boolean loadSave(char *filePath); // Meload file save
 boolean compareString(char *a, char *b);
 void quitCommand(int *stopStatus);
 void saveCommand();  
-
+void statusCommand();
 #endif

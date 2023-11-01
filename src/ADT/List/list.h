@@ -5,7 +5,7 @@
 #ifndef ADTList1
 #define ADTList1
 
-#include "boolean.h"
+#include "../boolean.h"
 #include "string.h"
 /* Kamus Umum */
 #define MaxEl 100

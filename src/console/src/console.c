@@ -1,11 +1,20 @@
 #include "console.h"
 #include <stdio.h>
 
- ListLagu DaftarLagu; 
- int idxLagu =0;
+Queue QueueLagu; 
+SetLagu SetDaftarLagu;
+ListLagu DaftarLagu; 
+int idxLagu =0;
+boolean statusLoad= false; 
 void readCommand(){
-  // Construct List 
+  // Construct Set 
+  CreateSet(&SetDaftarLagu);
+
+  // Construct ListLagu
   MakeListLagu(&DaftarLagu);
+  
+  // Consturct QueueLagu
+  CreateQueue(&QueueLagu);
 
   int i =0; 
   int stopStatus =0;
@@ -24,6 +33,9 @@ void readCommand(){
         printf("Start gagal dijalankan");
         return; 
       }
+    }
+    else if(compareString("STATUS", currentWord.TabWord)){
+      statusCommand();
     }
     else if(compareString("SAVE", currentWord.TabWord)){
       saveCommand();
@@ -54,18 +66,33 @@ boolean compareString(char *a, char *b){
   return true; 
 }
 
+void statusCommand(){
+  Lagu tempLagu; 
+  Queue newLagu = QueueLagu; 
+  dequeue(&newLagu, &tempLagu);
+  printf("\n\nNow Playing :\n %s - %s - %s\n", tempLagu.Penyanyi.TabWord, tempLagu.Judul.TabWord, tempLagu.Album.TabWord);
+  int idx =1; 
+  printf("Queue : \n");
+  while(!isEmpty(newLagu)){
+    dequeue(&newLagu,&tempLagu);
+    printf("%d. %s - %s - %s\n",idx,tempLagu.Penyanyi.TabWord, tempLagu.Judul.TabWord, tempLagu.Album.TabWord);
+    idx++;
+  }
+}
+
 boolean loadSave(char *filePath){
   printf("Lokasi File : %s\n",filePath);
   FILE *file = freopen(filePath, "r",stdin);
-  if (NULL == file) {
-   printf("file can't be opened \n");
+  if (file == NULL) {
+    printf("file can't be opened \n");
+    freopen("CONIN$", "r", stdin);
     return false; 
   }
   
   else{
     START();
     int index = currentChar - '0'; 
-    STARTWORD(); // Rading Empty Line 
+    STARTWORD(); // Reading Empty Line 
     for(int i =0 ;i < index; i++){
       Lagu tempLagu = MakeLagu();
       // Memasukkan save Penyanyi ke list Penyanyi
@@ -100,12 +127,20 @@ boolean loadSave(char *filePath){
 
       tempLagu.Judul = tempJudul;
       tempLagu.Album = tempAlbum; 
-      printf("Penyanyi : %s\n",tempLagu.Penyanyi.TabWord);
-      printf("Album : %s\n",tempLagu.Album.TabWord);
-      printf("Judul : %s\n", tempLagu.Judul.TabWord);
+      //printf("Penyanyi : %s\n",tempLagu.Penyanyi.TabWord);
+      //printf("Album : %s\n",tempLagu.Album.TabWord);
+      //printf("Judul : %s\n", tempLagu.Judul.TabWord);
       DaftarLagu.A[idxLagu] = tempLagu; 
+      enqueue(&QueueLagu, tempLagu);
+      Lagu a; 
+      //printf("Penyanyi : %s\n",SetDaftarLagu.buffer[idxLagu].Penyanyi.TabWord);
+      //printf("Album : %s\n",SetDaftarLagu.buffer[idxLagu].Album.TabWord);
+      //printf("Judul : %s\n", SetDaftarLagu.buffer[idxLagu].Judul.TabWord);
+      
+
       idxLagu++;
-  }  
+  }
+  printf("Total Lagu : %d\nTotal Lagu dalam Set : %d\n", idxLagu, LengthSet(SetDaftarLagu));
   freopen("CONIN$", "r", stdin);
   return true; 
 
@@ -172,7 +207,7 @@ boolean defaultSave(){
         }
       }
     }
-  /*Notes program akan error (inifinite loop) 
+  /*Notes program akan error (infinite loop) 
    * apabila pada save default tidak diakhiri \n
   */ 
   freopen("CONIN$", "r", stdin);
@@ -181,6 +216,13 @@ boolean defaultSave(){
 }
 void saveCommand(){
   ADVWORD();
+  Word filePath; 
+  SetWord(&filePath, "../../../save/");
+  ConcatWord(currentWord,&filePath);
+  printf("%s\n",filePath.TabWord);
+  FILE *file = fopen(filePath.TabWord, "w");
+  fprintf(file, "something");
+  fclose(file);
   printf("File berhasl disimpan\n");
 }
 
@@ -206,5 +248,3 @@ void quitCommand(int *stopStatus){
   *stopStatus= 1;   
   printf("Kamu keluar dari WayangWave.\nDadah ^_^/");
   }
-
-

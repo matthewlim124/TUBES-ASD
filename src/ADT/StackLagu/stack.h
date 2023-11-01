@@ -5,7 +5,8 @@
 #ifndef stackt_H
 #define stackt_H
 
-#include "boolean.h"
+#include "../boolean.h"
+#include "../Lagu/lagu.h"
 
 #define Nil -1
 #define MaxEl 100

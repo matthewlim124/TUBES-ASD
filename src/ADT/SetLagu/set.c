@@ -13,7 +13,7 @@ boolean IsEmpty(SetLagu s){
   return s.Length ==0;
 }
 
-int Length(SetLagu s){
+int LengthSet(SetLagu s){
   Lagu MARK = MakeLagu();
   int i =0; 
   while(!CompareLagu(MARK, s.buffer[i])){
@@ -23,7 +23,7 @@ int Length(SetLagu s){
 }
 
 boolean IsIn(SetLagu s, Lagu l){
-  int index = Length(s);
+  int index = LengthSet(s);
   for(int i =0; i< index; i++){
     if(CompareLagu(s.buffer[i],l))return true; 
   }
@@ -33,7 +33,7 @@ boolean IsIn(SetLagu s, Lagu l){
 void AddSet(SetLagu *s, Lagu l){
   if( !IsIn(*s,l)){
     s->Length++; 
-    s->buffer[Length(*s)] = l;
+    s->buffer[LengthSet(*s)] = l;
   }
 }
 //Belum Semua baru yang diperlukan
