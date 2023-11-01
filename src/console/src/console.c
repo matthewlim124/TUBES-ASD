@@ -1,9 +1,13 @@
 #include "console.h"
 #include <stdio.h>
 
+//Global Variable 
 Queue QueueLagu; 
 SetLagu SetDaftarLagu;
 ListLagu DaftarLagu; 
+Stack StackLagu; 
+Lagu currentPlaying; 
+
 int idxLagu =0;
 boolean statusLoad= false; 
 void readCommand(){
@@ -15,6 +19,9 @@ void readCommand(){
   
   // Consturct QueueLagu
   CreateQueue(&QueueLagu);
+  
+  // Consturct StackLagu 
+  CreateEmpty(&StackLagu);
 
   int i =0; 
   int stopStatus =0;
@@ -32,6 +39,15 @@ void readCommand(){
       else{
         printf("Start gagal dijalankan");
         return; 
+      }
+    }
+    else if(compareString("SONG", currentWord.TabWord)){
+      ADVWORD();
+      if(compareString("NEXT", currentWord.TabWord)){
+        songNext();
+      }
+      else if(compareString("PREVIOUS", currentWord.TabWord)){
+        songPrev();
       }
     }
     else if(compareString("STATUS", currentWord.TabWord)){
@@ -80,6 +96,31 @@ void statusCommand(){
   }
 }
 
+void songPrev(){
+  Lagu tempLagu; 
+  if(!IsEmptyStack(StackLagu)){
+    Pop(&StackLagu,&tempLagu);
+    printf("Memutar lagu sebelumnya\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
+    currentPlaying = tempLagu;
+  }
+  else{
+    printf("Riwayat lagu kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",currentPlaying.Judul.TabWord, currentPlaying.Penyanyi.TabWord);
+  }
+}
+void songNext(){
+  Lagu tempLagu; 
+  dequeue(&QueueLagu,&tempLagu);
+  if(!isEmpty(QueueLagu)){
+    currentPlaying = tempLagu; 
+    printf("Memutar lagu selanjutnya\n\"%s \" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
+    
+  }
+  else{
+    enqueue(&QueueLagu, tempLagu);
+    printf("Queue kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
+  }
+
+}
 boolean loadSave(char *filePath){
   printf("Lokasi File : %s\n",filePath);
   FILE *file = freopen(filePath, "r",stdin);
@@ -92,6 +133,7 @@ boolean loadSave(char *filePath){
   else{
     START();
     int index = currentChar - '0'; 
+    printf("\nInput Queue\n================================\n\n");
     STARTWORD(); // Reading Empty Line 
     for(int i =0 ;i < index; i++){
       Lagu tempLagu = MakeLagu();
@@ -127,22 +169,44 @@ boolean loadSave(char *filePath){
 
       tempLagu.Judul = tempJudul;
       tempLagu.Album = tempAlbum; 
-      //printf("Penyanyi : %s\n",tempLagu.Penyanyi.TabWord);
-      //printf("Album : %s\n",tempLagu.Album.TabWord);
-      //printf("Judul : %s\n", tempLagu.Judul.TabWord);
+      printf("Penyanyi : %s\n",tempLagu.Penyanyi.TabWord);
+      printf("Album : %s\n",tempLagu.Album.TabWord);
+      printf("Judul : %s\n", tempLagu.Judul.TabWord);
       DaftarLagu.A[idxLagu] = tempLagu; 
-      enqueue(&QueueLagu, tempLagu);
-      Lagu a; 
+      enqueue(&QueueLagu, tempLagu); 
       //printf("Penyanyi : %s\n",SetDaftarLagu.buffer[idxLagu].Penyanyi.TabWord);
       //printf("Album : %s\n",SetDaftarLagu.buffer[idxLagu].Album.TabWord);
       //printf("Judul : %s\n", SetDaftarLagu.buffer[idxLagu].Judul.TabWord);
-      
-
       idxLagu++;
-  }
-  printf("Total Lagu : %d\nTotal Lagu dalam Set : %d\n", idxLagu, LengthSet(SetDaftarLagu));
-  freopen("CONIN$", "r", stdin);
-  return true; 
+      currentPlaying = tempLagu;
+      printf("\n");
+
+    } //End For
+      
+    
+    //Taking for Input (Stack - History Song)
+    START(); 
+    int idxStack = currentChar - '0';
+    printf("Input Stack\n========================================\n\n");
+    printf("Second Input : %d\n", idxStack);
+    STARTWORD();
+    for(int i =0; i< idxStack; i++){
+      Lagu newLagu = MakeLagu();
+      Word Penyanyi = takeInput();
+      Word Album = takeInput();
+      Word Judul = takeInput();
+      newLagu.Album = Album; 
+      newLagu.Penyanyi = Penyanyi; 
+      newLagu.Judul = Judul; 
+      Push(&StackLagu, newLagu);
+      Lagu testLagu; 
+      Pop(&StackLagu, &testLagu);
+      Push(&StackLagu, newLagu);
+      printf("Penyanyi : %s\nAlbum : %s\nJudul : %s\n\n", testLagu.Penyanyi.TabWord, testLagu.Album.TabWord, testLagu.Judul.TabWord);
+    }
+    printf("Total Lagu : %d\nTotal Lagu dalam Set : %d\n", idxLagu, LengthSet(SetDaftarLagu));
+    freopen("CONIN$", "r", stdin);
+    return true; 
 
   }
 }
@@ -163,6 +227,7 @@ boolean defaultSave(){
       START(); // Reading num of albums
       printf("Jumlah Album : %c\n", currentChar);
       int idxA = currentChar -'0';
+
       // Reading Penyanyi
       Word space;
       STARTWORD();
@@ -238,13 +303,25 @@ void listCommand(){
 
 void quitCommand(int *stopStatus){
   printf("Apakah kamu ingin menyimpan data sesi sekarang? "); 
+  STARTWORD();// Reading Empty Space
   STARTWORD();
-  char masukan[50] = {0}; //Memastikan array berisi NULL 
-  CopyLetter(masukan); 
-  if(compareString(masukan,"Y")){
+  if(compareString(currentWord.TabWord,"Y")){
     printf("Saving....\n");
     printf("Selesai SAVE\n");
   }
   *stopStatus= 1;   
   printf("Kamu keluar dari WayangWave.\nDadah ^_^/");
   }
+
+Word takeInput(){
+  STARTWORD();
+  Word tempWord = currentWord;
+  Word space; 
+  while(!isEndWord() && !EOP){
+    ADVWORD();
+    SetWord(&space, " ");
+    ConcatWord(currentWord, &space);
+    ConcatWord(space, &tempWord);
+  }
+  return tempWord; 
+}

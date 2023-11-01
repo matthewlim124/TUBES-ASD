@@ -5,7 +5,7 @@ void  CreateEmpty(Stack *S){
   Top(*S) =  Nil;
 }
 
-boolean IsEmpty(Stack S){
+boolean IsEmptyStack(Stack S){
   return (Top(S) == Nil);
 }
 
