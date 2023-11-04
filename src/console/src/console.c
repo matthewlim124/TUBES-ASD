@@ -7,6 +7,7 @@ SetLagu SetDaftarLagu;
 ListLagu DaftarLagu; 
 Stack StackLagu; 
 Lagu currentPlaying; 
+Map Playlist;
 
 int idxLagu =0;
 boolean statusLoad= false; 
@@ -22,6 +23,9 @@ void readCommand(){
   
   // Consturct StackLagu 
   CreateEmpty(&StackLagu);
+
+  // Construct Playlist
+  CreateEmptyMap(&Playlist);
 
   int i =0; 
   int stopStatus =0;
@@ -122,8 +126,24 @@ void songNext(){
 
 }
 
-void CreatePlaylist(){
-  
+void createPlaylist(){
+  char input[100];
+  printf("Masukkan nama playlist yang ingin dibuat : ");
+  scanf("%s", input);
+
+  int i = 0;
+  while(input[i] != Undefined){
+    Playlist.Elements[find_empty_map_idx(Playlist)].Key[i] = input[i];
+    i++;
+  }
+
+  printf("\n");
+  printf("Playlist %s berhasil dibuat! Silakan masukkan lagu - lagu artis terkini kesayangan Anda!", Playlist.Elements[find_empty_map_idx(Playlist)].Key);
+}
+
+
+void addPlaylist(){
+
 }
 
 boolean loadSave(char *filePath){

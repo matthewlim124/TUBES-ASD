@@ -7,6 +7,7 @@
 #include "../../ADT/SetLagu/set.h"
 #include "../../ADT/Queue/queue.h"
 #include "../../ADT/StackLagu/stack.h"
+#include "../../ADT/MapLagu/map.h"
 
 void readCommand(); // Membaca Command dari User
 boolean defaultSave(); // Meload file save default
@@ -18,4 +19,6 @@ void statusCommand();
 Word takeInput();
 void songNext();
 void songPrev();
+void createPlaylist();
+void addPlaylist();
 #endif
