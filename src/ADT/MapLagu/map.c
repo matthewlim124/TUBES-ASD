@@ -1,11 +1,20 @@
 #include "map.h"
 #include <stdio.h>
 
+//PENJELASAN ADT MAP UNTUK TUBES INI
+/*
+    //REPRESENTASI VISUAL MAP
+    MAP Playlist = {(["Key"],[["Value1"],["Value2"],["Value3"]])}
 
+    //TIPE DATA MAPENTRY
+    Key pada map berupa array of character sebesar name_length 
+    Value pada map berupa  array 2 dimensi (matrix) of character sebesar MaxEl,name_length
 
-/* MODUL Map
-Deklarasi stack yang dengan implementasi array eksplisit-statik rata kiri
+    //MAP
+    Elements merupakan array of MAPENTRY sebesar MaxEl
+    Count merupakan jumlah elemen di Elements
 */
+
 
 /* Definisi Map M kosong : M.Count = Nil */
 /* M.Count = jumlah element Map */
@@ -13,7 +22,7 @@ Deklarasi stack yang dengan implementasi array eksplisit-statik rata kiri
 
 
 /* *** Konstruktor/Kreator *** */
-void CreateEmpty(Map *M){
+void CreateEmptyMap(Map *M){
     (*M).Count = Nil;
 
 
@@ -24,22 +33,30 @@ void CreateEmpty(Map *M){
 /* Ciri Map kosong : count bernilai Nil */
 
 /* ********* Predikat Untuk test keadaan KOLEKSI ********* */
-boolean IsEmpty(Map M){
+boolean IsEmptyMap(Map M){
     return (M.Count == Nil );
 }
 /* Mengirim true jika Map M kosong*/
 /* Ciri Map kosong : count bernilai Nil */
 
-boolean IsFull(Map M){
+boolean IsFullMap(Map M){
     return (M.Count == MaxEl);
+}
+
+boolean isElEmpty(Map M, int idx){
+
+    
+    return (M.Elements[idx].Key[0] == Undefined);
+       
+    
 }
 /* Mengirim true jika Map M penuh */
 /* Ciri Map penuh : count bernilai MaxEl */
-int length(char *str){
+int length_name(char *str){
     
     int i = 0;
     
-    while(str[i] != '\0'){
+    while(str[i] != Undefined){
         
 
         i++;
@@ -52,13 +69,13 @@ int find_key_idx(Map M, keytype *k){
 
     int char_counter = 0;
     for(int i = 0; i < M.Count; i++){
-        for(int j = 0; j < length(k); j++){
+        for(int j = 0; j < length_name(k); j++){
             if(M.Elements[i].Key[j] == k[j]){
                 char_counter++;
             }
         }
 
-        if(char_counter == length(k)){
+        if(char_counter == length_name(k)){
             return i;
         }
     }
@@ -67,22 +84,53 @@ int find_key_idx(Map M, keytype *k){
     
 }
 
-int find_empty_value(Map M){
+int find_empty_map_idx(Map M){
+    
+    /*I.S MAP TIDAK PENUH*/
+   
+    
+    for(int i = 0; i < M.Count; i++){
+
+        if(M.Elements[i].Key[0] == Undefined){
+            return i;
+        }
+    
+    }
+ 
+    
+}
+
+
+
+int find_value_idx(Map M, keytype* k, valuetype* value){
+    for(int i = 0; i < MaxEl; i++){
+        int counter = 0;
+        for(int j = 0; i < name_length; i++){
+            if(M.Elements[find_key_idx(M,k)].Value[i][j] == value[j]){
+                counter++;
+            }
+        }
+        if(counter == length_name(value)){
+            return i;
+        }
+    }
+
+    return idx_undef;
+}
+
+int find_empty_value_idx(Map M, keytype* k){
     /*I.S Value Tidak penuh*/
 
     /*Mencari index yang kosong di M.Elements[].Value[][]*/
     
     for(int i = 0; i < M.Count; i++){
 
-        for(int j = 0; j < MaxEl; j++){
-            if(M.Elements[i].Value[j][0] == '\0'){
-                return j;
-            }
+        if(M.Elements[find_key_idx(M,k)].Value[i][0] == '\0'){
+            return i;
         }
     
     }
-
-    
+ 
     
 }
 
@@ -91,68 +139,57 @@ int find_empty_value(Map M){
 
 void Insert(Map *M, keytype *k, valuetype *v){
 
-    if(IsEmpty(*M)){
-        for(int i = 0; i < length(k); i++){
+    if(IsEmptyMap(*M)){
+        for(int i = 0; i < length_name(k); i++){
             (*M).Elements[0].Key[i] = k[i]; 
         }
-        for(int i = 0; i < length(v); i++){
+        for(int i = 0; i < length_name(v); i++){
             (*M).Elements[0].Value[0][i] = v[i];
         }
-        
+        (*M).Count++;
         
     }else{
 
-        if(IsMember(*M,k,length(k))){
-            for(int i = 0; i < length(k); i++){
-                (*M).Elements[find_key_idx(*M,k)].Key[i] = k[i]; 
-            }
-            int idx_value = find_empty_value(*M);
-            for(int i = 0; i < length(v); i++){
+        if(IsMemberMap(*M,k,length_name(k))){
+            
+            for(int i = 0; i < length_name(v); i++){
                 
-                (*M).Elements[find_key_idx(*M,k)].Value[idx_value][i] = v[i];
+                (*M).Elements[find_key_idx(*M,k)].Value[find_empty_value_idx(*M,k)][i] = v[i];
             }
         }else{
-            for(int i = 0; i < length(k); i++){
-                (*M).Elements[(*M).Count].Key[i] = k[i]; 
+            for(int i = 0; i < length_name(k); i++){
+                (*M).Elements[find_empty_map_idx(*M)].Key[i] = k[i]; 
             }
-            for(int i = 0; i < length(v); i++){
-                (*M).Elements[(*M).Count].Value[0][i] = v[i];
+            for(int i = 0; i < length_name(v); i++){
+                (*M).Elements[find_empty_map_idx(*M)].Value[0][i] = v[i];
             }
-            
+            (*M).Count++;
         }
 
         
     }
 
-    (*M).Count++;
+   
 }
 /* Menambahkan Elmt sebagai elemen Map M. */
 /* I.S. M mungkin kosong, M tidak penuh
         M mungkin sudah beranggotakan v dengan key k */
 /* F.S. v menjadi anggota dari M dengan key k. Jika k sudah ada, operasi tidak dilakukan */
 
-void Delete(Map *M, keytype* k){
-    if(IsMember(*M,k,length(k))){
-        if((*M).Count == 1){
-            (*M).Count = Nil;
-        }else{
-            (*M).Count--;
+void Delete(Map *M, keytype* k, valuetype* value){
+    
+    //Key yang ingin dihapus
+    if(value[0] == Undefined){
+        (*M).Elements[find_key_idx(*M,k)].Key[0] = Undefined;
             
-            boolean isFound = false;
-            
-
-            for(int i = 0; i < (*M).Count; i++){
-                if((*M).Elements[i].Key == k){
-                    isFound = true;
-                }
-                if(isFound){
-                    (*M).Elements[i] = (*M).Elements[i+1];
-                    
-                }
-                
-            }
-        }
+        (*M).Count--;
+    }else{
+        //Value di key yang ingin dihaapus
+        (*M).Elements[find_key_idx(*M,k)].Value[find_value_idx(*M,k,value)][0] = Undefined;
     }
+    
+    (*M).Count--;
+    //Apakah ada di map
     
 }
 
@@ -161,8 +198,8 @@ void Delete(Map *M, keytype* k){
         element dengan key k mungkin anggota / bukan anggota dari M */
 /* F.S. element dengan key k bukan anggota dari M */
 
-boolean IsMember(Map M, keytype *k, int length){
-    if(!(IsEmpty(M))){
+boolean IsMemberMap(Map M, keytype *k, int length){
+    if(!(IsEmptyMap(M))){
         //Traversal untuk mengecek tiap karakter key di M dengan k
         for(int i = 0; i < M.Count; i++){
             int j = 0;
