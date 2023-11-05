@@ -70,6 +70,8 @@ boolean isElEmpty(Map M, int idx);
 
 int length_name(char *str);
 
+int value_count(Map M, keytype*k);
+
 int find_value_idx(Map M, keytype* k, valuetype* value);
 
 int find_empty_value_idx(Map M, keytype* k);
@@ -93,7 +95,7 @@ void Delete(Map *M, keytype *k, valuetype* value);
         element dengan key k mungkin anggota / bukan anggota dari M */
 /* F.S. element dengan key k bukan anggota dari M */
 
-boolean IsMemberMap(Map M, keytype* k, int length);
+boolean IsMemberMap(Map M, keytype* k);
 /* Mengembalikan true jika k adalah member dari M */
 
 

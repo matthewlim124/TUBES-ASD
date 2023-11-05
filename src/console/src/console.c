@@ -7,7 +7,9 @@ SetLagu SetDaftarLagu;
 ListLagu DaftarLagu; 
 Stack StackLagu; 
 Lagu currentPlaying; 
-Map Playlist;
+Map Playlist; //Playlist yang dimiliki
+Map Penyanyi; // Berisi penyanyi sebagai key dan album-album penyanyi sebagai value
+Map Album; //Berisi album sebagai key dan lagu-lagu sebagai value
 
 int idxLagu =0;
 boolean statusLoad= false; 
@@ -26,6 +28,12 @@ void readCommand(){
 
   // Construct Playlist
   CreateEmptyMap(&Playlist);
+
+  // Construct Penyanyi
+  CreateEmptyMap(&Penyanyi);
+
+  // Construct Album
+  CreateEmptyMap(&Album);
 
   int i =0; 
   int stopStatus =0;
@@ -52,6 +60,25 @@ void readCommand(){
       }
       else if(compareString("PREVIOUS", currentWord.TabWord)){
         songPrev();
+      }
+    }
+    else if(compareString("PLAYLIST", currentWord.TabWord)){
+      ADVWORD();
+      if(compareString("CREATE", currentWord.TabWord)){
+        createPlaylist();
+      }
+      else if(compareString("ADD", currentWord.TabWord)){
+        ADVWORD();
+        if(compareString("SONG", currentWord.TabWord)){
+          addPlaylist("SONG");
+        }
+        else{
+          addPlaylist("ALBUM");
+        }
+      }
+
+      else if(compareString("SWAP", currentWord.TabWord)){
+        
       }
     }
     else if(compareString("STATUS", currentWord.TabWord)){
@@ -142,7 +169,65 @@ void createPlaylist(){
 }
 
 
-void addPlaylist(){
+void insertMap(Map *M){
+  //Insert penyanyi dan album
+
+}
+
+void displayMap(char *type){
+  //Display Map
+  
+}
+
+
+
+void addPlaylist(char *type){
+
+  char input[name_length];
+
+  if(compareString("SONG", type)){
+    //ADD SONG
+    displayMap("PENYANYI");
+    printf("Masukkan nama penyanyi yang ingin dipilih: ");
+    scanf("%s", input);
+
+    if(IsMemberMap(Penyanyi, input)){
+      displayMap("ALBUM");
+      printf("Masukkan Judul Album yang dipilih : ");
+      scanf("%s", input);
+
+      if(IsMemberMap(Album, input)){
+        int id_lagu, id_playlist;
+        displayMap("LAGU");
+        printf("Masukkan ID Lagu yang dipilih : ");
+        scanf("%d", &id_lagu);
+
+        displayMap("PLAYLIST");
+        printf("Masukkan ID Playlist yang dipilih : ");
+        scanf("%d", &id_playlist);
+
+        printf("Lagu dengan judul “PINK VENOM” pada album BORN PINK oleh penyanyi BLACKPINK berhasil ditambahkan ke dalam playlist K-Pop Enjoyer.");
+      }
+    }
+  }else{
+    //ADD ALBUM
+
+  }
+  
+  
+  
+}
+
+
+void swapPlaylist(int id_play, int song1, int song2){
+
+}
+
+void deletePlaylist(){
+
+}
+
+void removePlaylist(int id_play, int song_id){
 
 }
 
