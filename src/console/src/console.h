@@ -23,5 +23,14 @@ void createPlaylist();
 void addPlaylist();
 void playSong();
 void playPlaylist();
+/*Command PLAY PLAYLIST digunakan untuk memainkan lagu berdasarkan id playlist. Ketika command ini berhasil dieksekusi, queue akan berisi semua lagu yang ada dalam playlist yang dimainkan dan isi riwayat lagu sama dengan queue, tetapi dengan urutan yang di-reverse.
+
+>> PLAY PLAYLIST;
+
+Masukkan ID Playlist: 2;
+
+Memutar playlist “K-pop Enjoyer”.
+
+*/
 
 #endif

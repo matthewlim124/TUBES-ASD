@@ -170,10 +170,81 @@ void createPlaylist(){
 
 void playSong()
 {
+  printf("Daftar Penyanyi: \n");
+  displayMap("PENYANYI");
+  printf("Masukkan Nama Penyanyi yang dipilih : ");
+  char input[name_length];
+  scanf("%s", input);
+
+  int i = 0;
+  while(input[i] != Undefined){
+    Penyanyi.Elements[find_empty_map_idx(Penyanyi)].Key[i] = input[i];
+    i++;
+  }
+
+  printf("\n");
+  printf("Daftar Album oleh %s:\n", Penyanyi.Elements[find_empty_map_idx(Penyanyi)].Key);
+  displayMap("ALBUM");
+  printf("Masukkan Nama Album yang dipilih : ");
+  scanf("%s", input);
+  
+  printf("\n");
+  i = 0;
+  while(input[i] != Undefined){
+    Album.Elements[find_empty_map_idx(Album)].Key[i] = input[i];
+    i++;
+  }
+  printf("Daftar Lagu Album %s oleh %s : \n", Album.Elements[find_empty_map_idx(Album)].Key, Penyanyi.Elements[find_empty_map_idx(Penyanyi)].Key);
+  displayMap("LAGU");
+  printf("Masukkan ID Lagu yang dipilih : ");
+  int id_lagu;
+  scanf("%d", &id_lagu);
+
+  printf("\n");
+  printf("Memutar lagu %s oleh %s", Album.Elements[find_empty_map_idx(Album)].Key, Penyanyi.Elements[find_empty_map_idx(Penyanyi)].Key);
+
+  //Empty Queue
+  while(!isEmpty(QueueLagu)){
+    dequeue(&QueueLagu, &currentPlaying);
+  }
+  //Empty Stack
+  while(!IsEmptyStack(StackLagu)){
+    Pop(&StackLagu, &currentPlaying);
+  }
 }
 
 void playPlaylist()
 {
+  printf("Masukkan ID Playlist: ");
+  int id_playlist;
+  scanf("%d", &id_playlist);
+
+  printf("\n");
+  printf("Memutar playlist \"%s\".", Playlist.Elements[find_empty_map_idx(Playlist)].Key);
+
+  //Enter reversed queue to stack 
+  Stack tempStack;
+  while(!isEmpty(QueueLagu)){
+    Lagu tempLagu;
+    dequeue(&QueueLagu, &tempLagu);
+    Push(&tempStack, tempLagu);
+  }
+  while(!IsEmptyStack(tempStack)){
+    Lagu tempLagu;
+    Pop(&tempStack, &tempLagu);
+    Push(&StackLagu, tempLagu);
+  }
+
+
+  //Enter album song to queue
+  int i = 0;
+  while(Album.Elements[find_empty_map_idx(Album)].Value[i] != Undefined){
+    valuetype currentSong = *(Album.Elements[find_empty_map_idx(Album)].Value[i]);
+    ElType song = {currentSong};
+    enqueue(&QueueLagu, song);
+    i++;
+  }
+
 }
 
 void insertMap(Map *M){
