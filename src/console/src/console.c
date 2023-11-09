@@ -168,6 +168,13 @@ void createPlaylist(){
   printf("Playlist %s berhasil dibuat! Silakan masukkan lagu - lagu artis terkini kesayangan Anda!", Playlist.Elements[find_empty_map_idx(Playlist)].Key);
 }
 
+void playSong()
+{
+}
+
+void playPlaylist()
+{
+}
 
 void insertMap(Map *M){
   //Insert penyanyi dan album
