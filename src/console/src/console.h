@@ -21,4 +21,7 @@ void songNext();
 void songPrev();
 void createPlaylist();
 void addPlaylist();
+void playSong();
+void playPlaylist();
+
 #endif
