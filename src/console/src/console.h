@@ -4,9 +4,11 @@
 #include "../../ADT/boolean.h"
 #include "../../ADT/Word/word.h"
 #include "../../ADT/ListLagu/listlagu.h"
-#include "../../ADT/SetLagu/set.h"
+#include "../../ADT/SetWord/set.h"
 #include "../../ADT/Queue/queue.h"
 #include "../../ADT/StackLagu/stack.h"
+#include "../../ADT/MapWord/map.h"
+#include "../../ADT/Playlist/playlist.h"
 
 void readCommand(); // Membaca Command dari User
 boolean defaultSave(); // Meload file save default
@@ -18,4 +20,5 @@ void statusCommand();
 Word takeInput();
 void songNext();
 void songPrev();
+void listCommand();
 #endif
