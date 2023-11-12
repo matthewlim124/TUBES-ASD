@@ -4,21 +4,29 @@
 #include "../../ADT/boolean.h"
 #include "../../ADT/Word/word.h"
 #include "../../ADT/ListLagu/listlagu.h"
-#include "../../ADT/SetLagu/set.h"
+#include "../../ADT/SetWord/set.h"
 #include "../../ADT/Queue/queue.h"
 #include "../../ADT/StackLagu/stack.h"
-#include "../../ADT/MapLagu/map.h"
+#include "../../ADT/MapWord/map.h"
+#include "../../ADT/Playlist/playlist.h"
 
+void playPlaylist();
+void historyClear();
+void queueClear();
+void playSong();
+void queueSong();
+void playlistCreate();
+void playlistAddSong();
+void playlistAddAlbum();
 void readCommand(); // Membaca Command dari User
 boolean defaultSave(); // Meload file save default
 boolean loadSave(char *filePath); // Meload file save 
 boolean compareString(char *a, char *b);
 void quitCommand(int *stopStatus);
-void saveCommand();  
+void saveCommand();
 void statusCommand();
 Word takeInput();
 void songNext();
 void songPrev();
-void createPlaylist();
-void addPlaylist();
+void listCommand();
 #endif
