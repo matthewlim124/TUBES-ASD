@@ -75,6 +75,9 @@ void readCommand(){
       if(compareString("SONG", currentWord.TabWord)){
         queueSong();
       }
+      else if(compareString("PLAYLIST", currentWord.TabWord)){
+        queuePlaylist();
+      }
       else if(compareString("CLEAR", currentWord.TabWord)){
         queueClear();
         printf("Queue berhasil dikosongkan.\n");
@@ -184,6 +187,24 @@ void playSong(){
   }
 }
 
+void queuePlaylist(){
+  printf("Daftar Playlist : \n");
+  for(int i =0; i<MapPlaylist.Count; i++){
+    printf("%d. %s\n",i+1,MapPlaylist.Elements[i].Key.TabWord);
+  }
+  START(); //Reading \n
+  printf("Masukkan ID Playlist : ");
+  STARTWORD();
+  int Index = WordToInt(currentWord) -1;
+  Word Key = MapPlaylist.Elements[Index].Key;
+  LinkedList L = ValuePlaylist(MapPlaylist, Key);
+  addressLinkedList P = First(L);
+  while(P != Nil_LL){
+    enqueue(&QueueLagu, Info(P));
+    P = P->next;
+  }
+  printf("Berhasil menambahkan playlist \e[1;32m%s\e[m ke queue.\n\n",Key.TabWord);
+}
 void historyClear(){
   CreateEmpty(&StackLagu);
 }
@@ -278,7 +299,10 @@ void songPrev(){
     currentPlaying = tempLagu;
   }
   else{
-    printf("Riwayat lagu kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",currentPlaying.Judul.TabWord, currentPlaying.Penyanyi.TabWord);
+    if(!IsEmptyLagu(currentPlaying))printf("Riwayat lagu kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",currentPlaying.Judul.TabWord, currentPlaying.Penyanyi.TabWord);
+    else{
+      printf("Riwayat lagu kosong, sedang tidak memutar lagu\nTidak memutar lagu apapun.\n");
+    }
   }
 }
 void songNext(){
@@ -291,8 +315,10 @@ void songNext(){
   }
   else{
     enqueue(&QueueLagu, tempLagu);
-    printf("Queue kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
+    if(!IsEmptyLagu(currentPlaying))printf("Queue kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
   }
+
+  if(IsEmptyLagu(currentPlaying)) printf("Tidak ada lagu yang sedang diputar\nTidak memutar lagu apapun.\n");
 
 }
 boolean loadSave(char *filePath){
@@ -356,15 +382,12 @@ boolean loadSave(char *filePath){
       printf("Panjang Set : %d\n", SetDaftarPenyanyi.Count);
       AddSet(&SetDaftarPenyanyi, tempLagu.Penyanyi);
 
-      // Inserting data to Queue 
-      enqueue(&QueueLagu, tempLagu);
 
       //printf("Penyanyi : %s\n",SetDaftarLagu.buffer[idxLagu].Penyanyi.TabWord);
       //printf("Album : %s\n",SetDaftarLagu.buffer[idxLagu].Album.TabWord);
       //printf("Judul : %s\n", SetDaftarLagu.buffer[idxLagu].Judul.TabWord);
       
       idxLagu++;
-      currentPlaying = tempLagu;
       printf("\n");
 
     } //End For
