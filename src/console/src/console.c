@@ -70,6 +70,13 @@ void readCommand(){
     else if(compareString("LIST", currentWord.TabWord)){
       listCommand();
     }
+
+    else if(compareString("PLAYLIST", currentWord.TabWord)){
+      ADVWORD();
+      if(compareString(currentWord.TabWord, "CREATE")){
+        playlistCreate();
+      }
+    }
     else if(compareString(currentWord.TabWord, "LOAD")){
       ADVWORD();
       char path[120] = "../../../save/";
@@ -80,6 +87,22 @@ void readCommand(){
       if (success)printf("File konfigurasi '%s' aplikasi berhasil dibaca. Wayangwave berhasil dijalankan\n", path);
       else printf("File konfiguras aplikasi gagal dibaca.\n");
     }
+  }
+}
+
+void playlistCreate(){
+  STARTWORD();//Reading \n
+  printf("Masukkan nama playlist yang ingin dibuat : ");
+  Word namaPlaylist= takeInput();
+  boolean valid = false; 
+  if(!compareString("", namaPlaylist.TabWord)){
+    LinkedList emptyList;
+    CreateEmptyLL(&emptyList);
+    InsertPlaylist(&MapPlaylist, namaPlaylist, emptyList);
+    printf("Playlist \e[1;32m%s\e[m berhasil dibuat\n",namaPlaylist.TabWord);
+  }
+  else{
+    printf("Minimal terdapat 3 karakter selain whitespace dalam nama playlist. Silakan coba lagi.\n");
   }
 }
 
