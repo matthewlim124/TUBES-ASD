@@ -10,6 +10,10 @@
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
 
+void playPlaylist();
+void historyClear();
+void queueClear();
+void playSong();
 void queueSong();
 void playlistCreate();
 void readCommand(); // Membaca Command dari User

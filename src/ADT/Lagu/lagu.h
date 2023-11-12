@@ -11,7 +11,7 @@ typedef struct{
 
 // Constructor 
 Lagu MakeLagu();
-
+boolean IsEmptyLagu(Lagu a);
 boolean CompareLagu(Lagu a, Lagu b);
 
 #endif
