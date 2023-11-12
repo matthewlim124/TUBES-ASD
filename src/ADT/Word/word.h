@@ -9,6 +9,7 @@ typedef struct{
   int Length;
 }Word;
 
+int WordToInt(Word w);
 void MakeWord(Word *s); 
 /*Melakukan awal string dengan string kosong, yaitu {0} dalam array string atau 
  * bisa hanya berisis '\0' */

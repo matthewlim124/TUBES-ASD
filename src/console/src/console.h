@@ -10,6 +10,7 @@
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
 
+void queueSong();
 void playlistCreate();
 void readCommand(); // Membaca Command dari User
 boolean defaultSave(); // Meload file save default

@@ -70,7 +70,12 @@ void readCommand(){
     else if(compareString("LIST", currentWord.TabWord)){
       listCommand();
     }
-
+    else if(compareString("QUEUE", currentWord.TabWord)){
+      ADVWORD();
+      if(compareString("SONG", currentWord.TabWord)){
+        queueSong();
+      }
+    }
     else if(compareString("PLAYLIST", currentWord.TabWord)){
       ADVWORD();
       if(compareString(currentWord.TabWord, "CREATE")){
@@ -90,6 +95,50 @@ void readCommand(){
   }
 }
 
+void queueSong(){
+  printf("Daftar Penyanyi : \n");
+  for(int i =0; i< SetDaftarPenyanyi.Count; i++){
+    printf("%d. %s\n", i+1, SetDaftarPenyanyi.buffer[i].TabWord);
+  }
+  printf("\n");
+  printf("Masukkan nama penyanyi : "); 
+  START(); //Reading \n;
+  Word inputUser = takeInput();
+  printf("\n");
+
+  if(IsMember(MapAlbum, inputUser)){
+    printf("Daftar Album oleh \e[1;32m%s\e[m : \n",inputUser.TabWord);
+    SetOfWord temp = Value(MapAlbum, inputUser);
+    for(int j = 0; j< temp.Count; j++){
+      printf("%d. %s\n",j+1,temp.buffer[j].TabWord);
+    }
+    
+
+    printf("\nMasukkan Nama Album yang dipilih : ");
+    START(); //Reading \n;
+    Word inputUser2 = takeInput();
+    if(IsMember(MapLagu, inputUser2)){
+      printf("Daftar Lagu Album \e[1;32m%s\e[m oleh \e[1;32m%s\e[m :\n",inputUser.TabWord, inputUser2.TabWord);
+      SetOfWord tempJudul = Value(MapLagu, inputUser2);
+      for(int j = 0; j < tempJudul.Count; j++){
+        printf("%d. %s\n",j+1,tempJudul.buffer[j].TabWord);
+      }
+
+      printf("Pilih ID Lagu yang dipilih : ");
+      START();//Reading \n
+      STARTWORD();
+      int indexLagu = WordToInt(currentWord) -1 ;
+      Lagu newLagu; 
+      newLagu.Album = inputUser2; 
+      newLagu.Judul = tempJudul.buffer[indexLagu];
+      newLagu.Penyanyi = inputUser;
+      enqueue(&QueueLagu, newLagu);
+      printf("\nBerhasil menambahkan Lagu \"%s\" oleh \"%s\" ke queue.",tempJudul.buffer[indexLagu].TabWord,inputUser.TabWord);
+    }
+
+  }
+  printf("\n");
+}
 void playlistCreate(){
   STARTWORD();//Reading \n
   printf("Masukkan nama playlist yang ingin dibuat : ");
@@ -231,7 +280,7 @@ boolean loadSave(char *filePath){
           AddSet(&newSetA, DaftarLagu.A[j].Album); 
         }
       }
-      Insert(&MapLagu, SetDaftarPenyanyi.buffer[i], newSetA);
+      Insert(&MapAlbum, SetDaftarPenyanyi.buffer[i], newSetA);
     }
 
 
@@ -243,7 +292,7 @@ boolean loadSave(char *filePath){
           AddSet(&newSetJ, DaftarLagu.A[j].Judul); 
         }
       }
-      Insert(&MapAlbum, SetDaftarAlbum.buffer[i], newSetJ);
+      Insert(&MapLagu, SetDaftarAlbum.buffer[i], newSetJ);
     }
     printf("Printing Map...\n");
     printf("Count Num of Map : %d\n", MapAlbum.Count);

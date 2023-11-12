@@ -10,3 +10,4 @@ Membuat WayangWave
 ![100%](https://progress-bar.dev/100?title=Quit)
 ![90%](https://progress-bar.dev/90?title=Start)
 ![20%](https://progress-bar.dev/20?title=Playlist)
+![20%](https://progress-bar.dev/20?title=Queue)
