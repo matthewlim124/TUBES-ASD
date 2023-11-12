@@ -2,47 +2,31 @@
 #define map_H
 #include <stdio.h>
 #include "../boolean.h"
+#include "../Word/word.h"
+#include "../SetWord/set.h"
 
-
-//PENJELASAN ADT MAP UNTUK TUBES INI
-/*
-    //REPRESENTASI VISUAL MAP
-    MAP Playlist = { (["Key1"],[["Value1"],["Value2"],["Value3"]]), (["Key2"],[["Value1"],["Value2"],["Value3"]]), dst }
-
-    //TIPE DATA MAPENTRY
-    Key pada map berupa array of character sebesar name_length 
-    Value pada map berupa  array 2 dimensi (matrix) of character sebesar MaxEl,name_length
-
-    //MAP
-    Elements merupakan array of MAPENTRY sebesar MaxEl
-    Count merupakan jumlah elemen di Elements
+/* MODUL Map
+Deklarasi stack yang dengan implementasi array eksplisit-statik rata kiri
 */
-
-
 
 // #define false 0
 // #define true 1
-#define Nil 0
-#define idx_undef -1
-#define MaxEl 100
-#define Undefined '\0'
-
-#define name_length 51
+#define NilMap 0 
+#define MaxElMap 10
 
 // typedef int bool;
-typedef char keytype;
-typedef char valuetype;
-
-
-typedef struct {
-	keytype Key[name_length];
-	
-	valuetype Value[MaxEl][name_length];
-} MapEntry;
+typedef Word wordkeytype;
+typedef SetOfWord wordvaluetype;
+typedef int address;
 
 typedef struct {
-	MapEntry Elements[MaxEl];
-	int Count;
+	wordkeytype Key;
+	wordvaluetype Value;
+} mapinfotype;
+
+typedef struct {
+	mapinfotype Elements[MaxElMap];
+	address Count;
 } Map;
 
 /* Definisi Map M kosong : M.Count = Nil */
@@ -66,39 +50,24 @@ boolean IsFullMap(Map M);
 /* Mengirim true jika Map M penuh */
 /* Ciri Map penuh : count bernilai MaxEl */
 
-boolean isElEmpty(Map M, int idx);
-
-int length_name(char *str);
-
-int value_count(Map M, keytype*k);
-
-int find_value_idx(Map M, keytype* k, valuetype* value);
-
-int find_empty_value_idx(Map M, keytype* k);
-
-int find_key_idx(Map M, keytype *k);
-
-int find_empty_map_idx(Map M);
-
 /* ********** Operator Dasar Map ********* */
+wordvaluetype Value(Map M, wordkeytype k);
+/* Mengembalikan nilai value dengan key k dari M */
+/* Jika tidak ada key k pada M, akan mengembalikan Undefined */
 
-
-void Insert(Map *M, keytype *k, valuetype *v);
+void Insert(Map *M, wordkeytype k, wordvaluetype v);
 /* Menambahkan Elmt sebagai elemen Map M. */
 /* I.S. M mungkin kosong, M tidak penuh
         M mungkin sudah beranggotakan v dengan key k */
 /* F.S. v menjadi anggota dari M dengan key k. Jika k sudah ada, operasi tidak dilakukan */
 
-void Delete(Map *M, keytype *k, valuetype* value);
+void Delete(Map *M, wordkeytype k);
 /* Menghapus Elmt dari Map M. */
 /* I.S. M tidak kosong
         element dengan key k mungkin anggota / bukan anggota dari M */
 /* F.S. element dengan key k bukan anggota dari M */
 
-boolean IsMemberMap(Map M, keytype* k);
+boolean IsMember(Map M, wordkeytype k);
 /* Mengembalikan true jika k adalah member dari M */
-
-
-
 
 #endif

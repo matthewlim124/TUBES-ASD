@@ -40,4 +40,16 @@ void SetWord(Word *w, char *s){
   w->Length = i;
 }
 
+int WordToInt(Word w){
+  int t = 0;
+  for(int i= 0; i< w.Length ; i++){
+    int temp = 1; 
+    for(int j = w.Length - 1 - i; j > 0; j--){
+      temp*= 10;
+    }
+    t += (w.TabWord[i] - '0') * temp; 
+  }
+  return t; 
+}
+
 
