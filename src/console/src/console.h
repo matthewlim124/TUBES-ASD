@@ -15,7 +15,7 @@ boolean defaultSave(); // Meload file save default
 boolean loadSave(char *filePath); // Meload file save 
 boolean compareString(char *a, char *b);
 void quitCommand(int *stopStatus);
-void saveCommand();  
+void saveCommand();
 void statusCommand();
 Word takeInput();
 void songNext();

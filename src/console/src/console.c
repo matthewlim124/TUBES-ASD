@@ -467,11 +467,22 @@ void listCommand(){
    
   }
   else if(compareString(currentWord.TabWord, "PLAYLIST")){
-    
+    printf("Daftar playlist yang kamu miliki : \n");
+ 
+    for(int i =0; i< MapPlaylist.Count; i++){
+      printf("%d. %s\n",i+1,MapPlaylist.Elements[i].Key.TabWord);
+    }
+
+    if(MapPlaylist.Count == 0){
+      printf("Kamu tidak memiliki playlist\n");
+    }
   }
   else{
     printf("Command tidak bisa dieksekusi!\n");
   }
+  printf("\n");
+
+  START(); //Reading Empty Lines;
 
 }
 
