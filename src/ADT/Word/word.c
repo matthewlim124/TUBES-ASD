@@ -1,6 +1,9 @@
 #include "word.h"
 #include <stdio.h>
 
+boolean IsEmptyWord(Word w){
+  return w.Length ==0 ;
+}
 void MakeWord(Word *s){
   for(int i =0; i< STRING_MAX; i++){
     s->TabWord[i] = '\0';

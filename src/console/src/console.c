@@ -94,6 +94,21 @@ void readCommand(){
       if(compareString(currentWord.TabWord, "CREATE")){
         playlistCreate();
       }
+      else if(compareString(currentWord.TabWord, "ADD")){
+        ADVWORD();
+        if(compareString(currentWord.TabWord, "SONG")){
+          playlistAddSong();
+        }
+        else if(compareString(currentWord.TabWord, "ALBUM")){
+          playlistAddAlbum();
+        }
+      }
+      else if(compareString(currentWord.TabWord, "SWAP")){
+        ADVWORD();
+      }
+      else if(compareString(currentWord.TabWord, "DELETE")){
+        playlistDelete();
+      }
     }
     else if(compareString("PLAY", currentWord.TabWord)){
       ADVWORD();
@@ -344,6 +359,170 @@ void playlistCreate(){
     printf("Minimal terdapat 3 karakter selain whitespace dalam nama playlist. Silakan coba lagi.\n");
   }
 }
+
+
+void playlistAddSong(){
+  printf("Daftar Penyanyi : \n");
+  for(int i =0; i< SetDaftarPenyanyi.Count; i++){
+    printf("%d. %s\n", i+1, SetDaftarPenyanyi.buffer[i].TabWord);
+  }
+  printf("\n");
+  printf("Masukkan nama penyanyi : "); 
+  START(); //Reading \n;
+  Word inputUser = takeInput();
+  printf("\n");
+  
+  if(IsMember(MapAlbum, inputUser)){
+    printf("Daftar Album oleh \e[1;32m%s\e[m : \n",inputUser.TabWord);
+    SetOfWord temp = Value(MapAlbum, inputUser);
+    for(int j = 0; j< temp.Count; j++){
+      printf("%d. %s\n",j+1,temp.buffer[j].TabWord);
+    }
+
+
+    printf("\nMasukkan Nama Album yang dipilih : ");
+    START(); //Reading \n;
+    Word inputUser2 = takeInput();
+    if(IsMember(MapLagu, inputUser2)){
+      printf("Daftar Lagu Album \e[1;32m%s\e[m oleh \e[1;32m%s\e[m :\n",inputUser.TabWord, inputUser2.TabWord);
+      SetOfWord tempJudul = Value(MapLagu, inputUser2);
+      for(int j = 0; j < tempJudul.Count; j++){
+        printf("%d. %s\n",j+1,tempJudul.buffer[j].TabWord);
+      }
+
+      printf("Pilih ID Lagu yang dipilih : ");
+      START();//Reading \n
+      STARTWORD();
+      int indexLagu = WordToInt(currentWord) -1 ;
+      Lagu newLagu; 
+      newLagu.Album = inputUser2; 
+      newLagu.Judul = tempJudul.buffer[indexLagu];
+      newLagu.Penyanyi = inputUser;
+      
+      printf("\nDaftar Playlist Pengguna :\n");
+      for(int j =0; j<MapPlaylist.Count; j++){
+        printf("%d. %s\n",j+1, MapPlaylist.Elements[j].Key.TabWord);
+      }
+
+      printf("Masukkan ID Playlist : ");
+      STARTWORD();
+      printf("\n");
+      int Index = WordToInt(currentWord) -1;
+      if(MapPlaylist.Elements[Index].Key.Length == 0){
+        printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.", Index);
+      }else{
+        if(Search(MapPlaylist.Elements[Index].Value, newLagu) == Nil_LL){
+          InsVLast(&MapPlaylist.Elements[Index].Value, newLagu);
+          printf("\nLagu dengan judul \"%s\" pada album %s oleh penyanyi %s berhasil ditambahkan ke dalam playlist %s.",tempJudul.buffer[indexLagu].TabWord,inputUser2.TabWord, inputUser.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
+        }else{
+          printf("\nLagu dengan judul \"%s\" pada album %s oleh penyanyi %s sudah terdapat di dalam playlist %s.",tempJudul.buffer[indexLagu].TabWord,inputUser2.TabWord, inputUser.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
+        }
+      
+      } 
+    }
+    else{
+      printf("Album %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser2.TabWord);
+    }
+  }
+  else{
+    printf("Penyanyi %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser.TabWord);
+  }
+
+}
+
+void playlistAddAlbum(){
+  printf("Daftar Penyanyi : \n");
+  for(int i =0; i< SetDaftarPenyanyi.Count; i++){
+    printf("%d. %s\n", i+1, SetDaftarPenyanyi.buffer[i].TabWord);
+  }
+  printf("\n");
+  printf("Masukkan nama penyanyi : "); 
+  START(); //Reading \n;
+  Word inputUser = takeInput();
+  printf("\n");
+
+  if(IsMember(MapAlbum, inputUser)){
+    printf("Daftar Album oleh \e[1;32m%s\e[m : \n",inputUser.TabWord);
+    SetOfWord temp = Value(MapAlbum, inputUser);
+    for(int j = 0; j< temp.Count; j++){
+      printf("%d. %s\n",j+1,temp.buffer[j].TabWord);
+    }
+
+    printf("\nMasukkan Nama Album yang dipilih : ");
+    START(); //Reading \n;
+    Word inputUser2 = takeInput();
+    printf("\n");
+    if(IsMember(MapLagu, inputUser2)){
+      
+      printf("Daftar Playlist Pengguna :\n");
+      
+      for(int j =0; j<MapPlaylist.Count; j++){
+        printf("%d. %s\n",j+1, MapPlaylist.Elements[j].Key.TabWord);
+      }
+
+      printf("\nMasukkan ID Playlist : ");
+      START();// Reading \n
+      STARTWORD();
+      printf("\n");
+      int Index = WordToInt(currentWord) -1;
+      Word Key = MapPlaylist.Elements[Index].Key; 
+      if(IsEmptyWord(Key)){
+        printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.\n", Index+1);
+      }else{
+        SetOfWord tempJudul = Value(MapLagu, inputUser2);
+
+        Lagu newLagu;
+        newLagu.Album = inputUser2;
+        newLagu.Penyanyi = inputUser;
+        for(int j = 0; j < tempJudul.Count; j++){
+          newLagu.Judul = tempJudul.buffer[j];
+          if(Search(MapPlaylist.Elements[Index].Value, newLagu) == Nil_LL){
+            InsVLast(&MapPlaylist.Elements[Index].Value, newLagu);
+            
+          }
+
+        }
+        printf("Album dengan judul \e[1;32m%s\e[m berhasil ditambahkan ke dalam playlist pengguna \e[1;32m%s\e[m.\n",inputUser2.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
+
+      }
+      
+    }else{
+      printf("Album %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser2.TabWord);
+    }
+
+
+  }else{
+    printf("Penyanyi %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser.TabWord);
+  }
+  printf("\n");
+}
+
+void playlistSwap(){
+
+}
+
+void playlistDelete(){
+  printf("Daftar Playlist Pengguna :\n");
+      
+  for(int j =0; j<MapPlaylist.Count; j++){
+    printf("%d. %s\n",j+1, MapPlaylist.Elements[j].Key.TabWord);
+  }
+
+  printf("Masukkan ID Playlist : ");
+  START();// Reading \n
+  STARTWORD();
+  printf("\n");
+  int Index = WordToInt(currentWord) -1;
+  
+  if(MapPlaylist.Elements[Index].Key.Length == 0){
+    printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.", Index);
+  }else{
+    printf("Playlist ID %d dengan judul \e[1;32m%s\e[m berhasil dihapus.", Index+1, MapPlaylist.Elements[Index].Key.TabWord);
+    DeletePlaylist(&MapPlaylist, MapPlaylist.Elements[Index].Key);
+  }
+  printf("\n");
+}
+
 
 void statusCommand(){
   Lagu tempLagu = currentPlaying; 
