@@ -10,6 +10,8 @@
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
 
+void queueRemove();
+void queueSwap();
 void queuePlaylist();
 void playPlaylist();
 void historyClear();

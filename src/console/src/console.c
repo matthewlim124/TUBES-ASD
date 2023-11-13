@@ -82,6 +82,12 @@ void readCommand(){
         queueClear();
         printf("Queue berhasil dikosongkan.\n");
       }
+      else if(compareString("SWAP", currentWord.TabWord)){
+        queueSwap();
+      }
+      else if(compareString("REMOVE", currentWord.TabWord)){
+        queueRemove();
+      }
     }
     else if(compareString("PLAYLIST", currentWord.TabWord)){
       ADVWORD();
@@ -141,6 +147,7 @@ void playPlaylist(){
   }
   printf("\n");
 }
+
 void playSong(){
   printf("Daftar Penyanyi : \n");
   for(int i =0; i< SetDaftarPenyanyi.Count; i++){
@@ -187,6 +194,73 @@ void playSong(){
   }
 }
 
+void queueRemove(){
+  ADVWORD();
+  int IndexTarget = WordToInt(currentWord);
+  if(IndexTarget > QueueLagu.idxTail || IndexTarget < QueueLagu.idxHead){
+    printf("Lagu dengan urutan ke %d tidak ada.\n", IndexTarget);
+  }
+  else{
+    Queue newQueue; 
+    CreateQueue(&newQueue);
+    while(!isEmpty(QueueLagu)){
+      Lagu temp; 
+      int indexQ = QueueLagu.idxHead; 
+      dequeue(&QueueLagu, &temp);
+      if(indexQ != (IndexTarget-1) )
+        enqueue(&newQueue,temp);
+    }
+
+    QueueLagu = newQueue;
+  }
+  printf("\n");
+}
+
+void queueSwap(){
+  ADVWORD();
+  int IndexAwal = WordToInt(currentWord) - 1, IndexAkhir;
+  ADVWORD();
+  IndexAkhir = WordToInt(currentWord) -1 ;
+  if(IndexAwal > QueueLagu.idxTail || IndexAwal< QueueLagu.idxHead){
+    printf("Lagu dengan urutan ke %d tidak terdapat dalam queue.\n\n", IndexAwal + 1);
+    return; 
+  }
+  if(IndexAkhir > QueueLagu.idxTail || IndexAkhir <QueueLagu.idxHead){
+    printf("Lagu dengan urutan ke %d tidak teradapat dalam queue.\n\n", IndexAkhir + 1);
+    return; 
+  }
+  Lagu akhir, awal; 
+  Queue newLagu = QueueLagu; 
+  while (!isEmpty(newLagu)){
+    Lagu temp;
+    int index = newLagu.idxHead; 
+    dequeue(&newLagu, &temp);
+    if(IndexAkhir == index){
+      akhir = temp; 
+    }
+    else if(IndexAwal == index){
+      awal = temp; 
+    }
+  }
+  Queue akhirLagu;
+  CreateQueue(&akhirLagu);
+  while(!isEmpty(QueueLagu)){
+    Lagu temp;
+    int index = QueueLagu.idxHead; 
+    dequeue(&QueueLagu, &temp);
+    if(index == IndexAkhir){
+      enqueue(&akhirLagu, awal); 
+    }
+    else if(index == IndexAwal){
+      enqueue(&akhirLagu, akhir);
+    }
+    else{
+    enqueue(&akhirLagu, temp);
+    }
+  }
+  QueueLagu = akhirLagu;
+  printf("Lagu \e[1;32m%s\e[m berhasil ditukar dengan \e[1;32m%s\e[m.\n\n",awal.Judul.TabWord, akhir.Judul.TabWord);
+}
 void queuePlaylist(){
   printf("Daftar Playlist : \n");
   for(int i =0; i<MapPlaylist.Count; i++){
@@ -686,9 +760,10 @@ void quitCommand(int *stopStatus){
   printf("Apakah kamu ingin menyimpan data sesi sekarang? "); 
   STARTWORD();// Reading Empty Space
   STARTWORD();
+  printf("\n");
   if(compareString(currentWord.TabWord,"Y")){
     printf("Saving....\n");
-    printf("Selesai SAVE\n");
+    printf("Selesai SAVE\n\n");
   }
   *stopStatus= 1;   
   printf("Kamu keluar dari WayangWave.\nDadah ^_^/");
