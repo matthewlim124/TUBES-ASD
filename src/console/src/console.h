@@ -18,6 +18,8 @@ void queueSong();
 void playlistCreate();
 void playlistAddSong();
 void playlistAddAlbum();
+void playlistSwap();
+void playlistDelete();
 void readCommand(); // Membaca Command dari User
 boolean defaultSave(); // Meload file save default
 boolean loadSave(char *filePath); // Meload file save 
