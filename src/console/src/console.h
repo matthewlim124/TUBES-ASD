@@ -10,16 +10,20 @@
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
 
+void playlistDelete();
+void playlistSwap();
+void playlistRemove();
+void playlistAddAlbum();
+void playlistAddSong();
+void queueRemove();
+void queueSwap();
+void queuePlaylist();
 void playPlaylist();
 void historyClear();
 void queueClear();
 void playSong();
 void queueSong();
 void playlistCreate();
-void playlistAddSong();
-void playlistAddAlbum();
-void playlistSwap();
-void playlistDelete();
 void readCommand(); // Membaca Command dari User
 boolean defaultSave(); // Meload file save default
 boolean loadSave(char *filePath); // Meload file save 
