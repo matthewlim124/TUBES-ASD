@@ -10,6 +10,7 @@
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
 
+void playlistRemove();
 void playlistDelete();
 void playlistSwap();
 void playlistAddAlbum();

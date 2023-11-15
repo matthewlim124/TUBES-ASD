@@ -104,10 +104,13 @@ void readCommand(){
         }
       }
       else if(compareString(currentWord.TabWord, "SWAP")){
-        ADVWORD();
+        playlistSwap();
       }
       else if(compareString(currentWord.TabWord, "DELETE")){
         playlistDelete();
+      }
+      else if(compareString(currentWord.TabWord, "REMOVE")){
+        playlistRemove();
       }
     }
     else if(compareString("PLAY", currentWord.TabWord)){
@@ -498,7 +501,70 @@ void playlistAddAlbum(){
 }
 
 void playlistSwap(){
+  ADVWORD();
+  int playlist_idx = WordToInt(currentWord) - 1;
+  ADVWORD();
+  int idx1 = WordToInt(currentWord) - 1;
+  ADVWORD();
+  int idx2 = WordToInt(currentWord) - 1;
 
+  if(MapPlaylist.Elements[playlist_idx].Key.Length == 0){
+    printf("Tidak ada playlist dengan playlist ID %d\n", playlist_idx + 1);
+  }else{
+    if(idx1 < 0 || idx1 > NbElmt(MapPlaylist.Elements[playlist_idx].Value) - 1){
+      printf("Tidak ada lagu dengan urutan %d di playlist \"%s\"\n", idx1 + 1, MapPlaylist.Elements[playlist_idx].Key.TabWord);
+      return;
+    }
+    if(idx2 < 0 || idx2 > NbElmt(MapPlaylist.Elements[playlist_idx].Value) - 1){
+      printf("Tidak ada lagu dengan urutan %d di playlist \"%s\"\n", idx2 + 1, MapPlaylist.Elements[playlist_idx].Key.TabWord);
+      return;
+    }
+    addressLinkedList p1 = MapPlaylist.Elements[playlist_idx].Value.First;
+    addressLinkedList p2 = MapPlaylist.Elements[playlist_idx].Value.First;
+    Lagu temp;
+    
+    for(int j = 0; j < idx1; j++){
+      p1 = Next(p1);
+    }
+    temp = Info(p1);
+
+    for(int j = 0; j < idx2; j++){
+      p2 = Next(p2);
+    }
+    
+    Info(p1) = Info(p2);
+    Info(p2) = temp;
+
+    printf("Berhasil menukar lagu dengan nama \e[1;32m%s\e[m dengan \e[1;32m%s\e[m di playlist \e[1;32m%s\e[m\n", temp.Judul.TabWord , Info(p1).Judul.TabWord , MapPlaylist.Elements[playlist_idx].Key.TabWord);
+  }
+ 
+}
+
+void playlistRemove(){
+  ADVWORD();
+  int playlist_idx = WordToInt(currentWord) - 1;
+  ADVWORD();
+  int idx = WordToInt(currentWord) - 1;
+
+  if(MapPlaylist.Elements[playlist_idx].Key.Length == 0){
+    printf("Tidak ada playlist dengan ID %d\n", playlist_idx + 1);
+  }else{
+    if(idx < 0 || idx > NbElmt(MapPlaylist.Elements[playlist_idx].Value) - 1){
+      printf("Tidak ada lagu dengan urutan %d di playlist \"%s\" \n", idx + 1, MapPlaylist.Elements[playlist_idx].Key.TabWord);
+      
+    }else{
+      Word Key = MapPlaylist.Elements[playlist_idx].Key; 
+      LinkedList t = ValuePlaylist(MapPlaylist, Key);
+      addressLinkedList p = t.First;
+      for(int j = 0; j < idx; j++){
+        p = Next(p);
+      }
+      Lagu temp= p->info;
+      DelP(&t, temp);
+      MapPlaylist.Elements[playlist_idx].Value = t;
+      printf("Lagu \e[1;32m%s\e[m oleh \e[1;32m%s\e[m telah dihapus dari playlist \e[1;32m%s\e[m!\n", temp.Judul.TabWord, temp.Penyanyi.TabWord, MapPlaylist.Elements[playlist_idx].Key.TabWord);
+    }
+  }
 }
 
 void playlistDelete(){
