@@ -50,7 +50,7 @@ int WordToInt(Word w){
     for(int j = w.Length - 1 - i; j > 0; j--){
       temp*= 10;
     }
-    t += (w.TabWord[i] - '0') * temp; 
+    if(w.TabWord[i] - '0' <=9 && w.TabWord[i] - '0' >=0)t += (w.TabWord[i] - '0') * temp; 
   }
   return t; 
 }
