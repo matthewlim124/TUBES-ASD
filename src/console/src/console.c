@@ -468,8 +468,8 @@ void playlistAddAlbum(){
       STARTWORD();
       printf("\n");
       int Index = WordToInt(currentWord) -1;
-      Word Key = MapPlaylist.Elements[Index].Key; 
-      if(IsEmptyWord(Key)){
+      Word Keys = MapPlaylist.Elements[Index].Key; 
+      if(IsEmptyWord(Keys)){
         printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.\n", Index+1);
       }else{
         SetOfWord tempJudul = Value(MapLagu, inputUser2);
