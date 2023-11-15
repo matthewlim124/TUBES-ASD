@@ -63,7 +63,7 @@ void readCommand(){
       statusCommand();
     }
     else if(compareString("SAVE", currentWord.TabWord)){
-      saveCommand();
+      saveCommand(false);
     }
     else if(compareString("QUIT", currentWord.TabWord)){
       quitCommand(&stopStatus);
@@ -942,11 +942,16 @@ boolean defaultSave(){
   */ 
   return true; 
 }
-void saveCommand(){
-  ADVWORD();
+void saveCommand(boolean Quit){
   Word filePath; 
-  SetWord(&filePath, "../../../save/");
-  ConcatWord(currentWord,&filePath);
+  if(!Quit){
+    ADVWORD();
+    SetWord(&filePath, "../../../save/");
+    ConcatWord(currentWord,&filePath);
+  }
+  else{
+    SetWord(&filePath, "../../../save/defSave.txt");
+  }
   printf("%s\n",filePath.TabWord);
   FILE *file = fopen(filePath.TabWord, "w");
   
@@ -1104,6 +1109,7 @@ void quitCommand(int *stopStatus){
   STARTWORD();
   printf("\n");
   if(compareString(currentWord.TabWord,"Y")){
+    saveCommand(true);
     printf("Saving....\n");
     printf("Selesai SAVE\n\n");
   }
