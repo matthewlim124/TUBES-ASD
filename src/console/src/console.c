@@ -76,11 +76,33 @@ void readCommand(){
           addPlaylist("ALBUM");
         }
       }
-
       else if(compareString("SWAP", currentWord.TabWord)){
         
       }
     }
+    else if(compareString("QUEUE", currentWord.TabWord)){
+        ADVWORD();
+        if(compareString("SONG", currentWord.TabWord)){
+          queueSong();
+        }else if(compareString("PLAYLIST",currentWord.TabWord)){
+          queuePlaylist();
+        }else if(compareString("SWAP",currentWord.TabWord)){
+          int x,y;
+          ADV();
+          x = currentChar - '0';
+          ADV();
+          y = currentChar - '0';
+          queueSwap(x,y);
+        }else if(compareString("REMOVE",currentWord.TabWord)){
+          ADV();
+          int x = currentChar -'0';
+          queueRemove(x);
+        
+        }else if(compareString("CLEAR",currentWord.TabWord)){
+          queueClear();
+        }
+
+      }
     else if(compareString("STATUS", currentWord.TabWord)){
       statusCommand();
     }
@@ -292,8 +314,6 @@ void addPlaylist(char *type){
 
   }
   
-  
-  
 }
 
 
@@ -307,6 +327,190 @@ void deletePlaylist(){
 
 void removePlaylist(int id_play, int song_id){
 
+}
+
+void queueSong(){
+   int i,j;
+
+  printf("%s","Daftar Penyanyi :\n");
+  displayMap("PENYANYI");
+
+  char inputPenyanyi[name_length];
+  scanf("Masukkan Nama Penyanyi : %s", inputPenyanyi);
+
+  int keyIdx;
+  printf("Daftar Album oleh %s :\n",inputPenyanyi);
+  keyIdx = find_key_idx(Penyanyi,inputPenyanyi);
+  for(i = 0;i< value_count(Penyanyi,inputPenyanyi);i++){
+        printf("%d. ",i+1);
+        for(j = 0;j<length_name(Penyanyi.Elements[keyIdx].Value[i]);j++){
+            printf("%c",Penyanyi.Elements[keyIdx].Value[i][j]);
+        }
+        printf("\n");
+  }
+
+
+  char inputAlbum[name_length];
+  scanf("Masukkan Nama Album yang dipilih : %s", inputAlbum);
+
+ 
+  printf("Daftar Lagu Album %s oleh %s :\n",inputAlbum,inputPenyanyi);
+
+  keyIdx = find_key_idx(Album,inputAlbum);
+  for(i = 0;i< value_count(Album,inputAlbum);i++){
+        printf("%d. ",i+1);
+        for(j = 0;j<length_name(Album.Elements[keyIdx].Value[i]);j++){
+            printf("%c",Album.Elements[keyIdx].Value[i][j]);
+        }
+        printf("\n");
+  }
+
+  int songID;
+  scanf("Masukkan ID Lagu yang dipilih : %d", songID);
+
+  Lagu added = MakeLagu();
+  i = 0;
+  while(inputAlbum[i] != '\0'){
+    added.Album.TabWord[i] = inputAlbum[i];
+    i++;
+  }
+  added.Album.Length = i;
+  i = 0;
+  while(inputPenyanyi[i] != '\0'){
+    added.Penyanyi.TabWord[i] = inputPenyanyi[i];
+    i++;
+  }
+  added.Penyanyi.Length = i;
+  i = 0;
+  while(Album.Elements[keyIdx].Value[songID -1][i] != '\0'){
+    added.Judul.TabWord[i] = Album.Elements[keyIdx].Value[songID -1][i];
+    i++;
+  }
+  added.Judul.Length = i;
+  enqueue(&QueueLagu,added);
+
+}
+
+
+void queuePlaylist(){
+   int i,j;
+
+   int playListId;
+   scanf("Masukkan ID Playlist: %d",&playListId);
+
+   char playListKey[name_length] ;
+   for( i = 0;i<length_name(Playlist.Elements[playListId-1].Key);i++){
+      playListKey[i] =  Playlist.Elements[playListId-1].Key[i];
+   }
+
+   char song[name_length];
+   for(i = 0;i< value_count(Playlist,playListKey);i++){
+
+        Lagu l;
+        l = MakeLagu();
+
+        for(j = 0;j<length_name(Playlist.Elements[playListId-1].Value[i]);j++){
+            l.Judul.TabWord[j] = Playlist.Elements[playListId-1].Value[i][j];
+        }
+        
+        int albumIdx = find_key_idx(Album,l.Judul.TabWord);
+        for(j = 0;j<length_name(Album.Elements[albumIdx].Key);j++){
+            l.Album.TabWord[j] = Album.Elements[albumIdx].Key[j];
+        }
+
+      
+        int penyanyiIDX = find_key_idx(Penyanyi,l.Album.TabWord);
+        for(j = 0;j<length_name(Penyanyi.Elements[penyanyiIDX].Key);j++){
+            l.Penyanyi.TabWord[j] = Penyanyi.Elements[penyanyiIDX].Key[j];
+        }
+
+        enqueue(&QueueLagu,l);
+  }
+  printf("Berhasil menambahkan Playlist %s ke queue\n", playListKey);
+}
+
+void queueSwap(int x, int y){
+  if(!isEmpty(QueueLagu)){
+     if(x < 1 || x > length(QueueLagu)){
+        printf("Lagu dengan urutan ke %d tidak terdapat dalam queue!\n",x);
+        return;
+     }
+     if(y < 1 || y > length(QueueLagu)){
+       printf("Lagu dengan urutan ke %d tidak terdapat dalam queue!\n",y);
+       return;
+     }
+
+     int i,j;
+
+     char keyX[name_length];
+     char keyY[name_length];
+
+    for(j = 0;j<length_name((QueueLagu.buffer[x-1].Judul.TabWord));j++){
+        keyX[j] = QueueLagu.buffer[x-1].Judul.TabWord[j];
+    }
+
+    for(j = 0;j<length_name((QueueLagu.buffer[y-1].Judul.TabWord));j++){
+        keyY[j] = QueueLagu.buffer[y-1].Judul.TabWord[j];
+    }
+     
+
+     Lagu temp;
+     temp = MakeLagu();
+
+     for(i =0;i< length_name(QueueLagu.buffer[x-1].Album.TabWord);i++){
+        temp.Album.TabWord[i] = QueueLagu.buffer[x-1].Album.TabWord[i];
+     }
+
+    for(i =0;i< length_name(QueueLagu.buffer[x-1].Judul.TabWord);i++){
+        temp.Judul.TabWord[i] = QueueLagu.buffer[x-1].Judul.TabWord[i];
+     }
+
+    for(i =0;i< length_name(QueueLagu.buffer[x-1].Penyanyi.TabWord);i++){
+        temp.Penyanyi.TabWord[i] = QueueLagu.buffer[x-1].Penyanyi.TabWord[i];
+     }
+
+
+    for(i =0;i< length_name(QueueLagu.buffer[y-1].Album.TabWord);i++){
+        QueueLagu.buffer[x-1].Album.TabWord[i] = QueueLagu.buffer[y-1].Album.TabWord[i];
+     }
+
+    for(i =0;i< length_name(QueueLagu.buffer[y-1].Judul.TabWord);i++){
+        QueueLagu.buffer[x-1].Judul.TabWord[i] = QueueLagu.buffer[y-1].Judul.TabWord[i];
+     }
+     for(i =0;i< length_name(QueueLagu.buffer[y-1].Penyanyi.TabWord);i++){
+        QueueLagu.buffer[x-1].Penyanyi.TabWord[i] = QueueLagu.buffer[y-1].Penyanyi.TabWord[i];
+     }
+
+
+    for(i =0;i< length_name(temp.Album.TabWord);i++){
+        QueueLagu.buffer[y-1].Album.TabWord[i] = temp.Album.TabWord[i];
+     }
+
+    for(i =0;i< length_name(temp.Judul.TabWord);i++){
+        QueueLagu.buffer[y-1].Judul.TabWord[i] = temp.Judul.TabWord[i];
+     }
+    for(i =0;i< length_name(temp.Penyanyi.TabWord);i++){
+        QueueLagu.buffer[y-1].Penyanyi.TabWord[i] = temp.Penyanyi.TabWord[i];
+     }
+
+    printf("Lagu %s Berhasil ditukar dengan %s\n",keyX,keyY);
+    
+  }
+  
+}
+void queueRemove(int x){
+   int i;
+   for(i = x-1;i<length(QueueLagu)-1;i++){
+     queueSwap(i,i+1);
+   }
+   QueueLagu.idxTail--;
+}
+void queueClear(){
+  Lagu randomSong;
+  while(isEmpty(QueueLagu)){
+    dequeue(&QueueLagu,&randomSong);
+  }
+  printf("Queue berhasil dikosongkan\n");
 }
 
 boolean loadSave(char *filePath){
