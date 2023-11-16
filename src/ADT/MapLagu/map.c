@@ -166,7 +166,7 @@ void Insert(Map *M, keytype *k, valuetype *v){
         
     }else{
 
-        if(IsMemberMap(*M,k,length_name(k))){
+        if(IsMemberMap(*M,k)){
             if(find_value_idx(*M, k, v) == idx_undef){
                 for(int i = 0; i < length_name(v); i++){
                 
