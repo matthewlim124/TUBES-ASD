@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "boolean.h"
+#include "ADT/boolean.h"
+#include "console/src/console.h"
 
 int main(){
   boolean sEnd = false; 

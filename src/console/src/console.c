@@ -46,8 +46,6 @@ void readCommand(){
    while(!stopStatus){
     printf(">> ");
     STARTWORD();
-    printf("Iterasi Ke - %d \n",i);
-    printf("=================================================\n \n");
     i++;
     if(compareString(currentWord.TabWord, "START")){
       char path[120] = "../../../save/newSave.txt";
@@ -79,6 +77,9 @@ void readCommand(){
         printf("User not Found\nPlease Register or Login\n");
       }
       START();
+    }
+    else if(!userLogin){
+      printf("Silahkan Login atau Register terlebih dahulu.\n");
     }
     else if(compareString("SONG", currentWord.TabWord)){
       ADVWORD();
@@ -436,7 +437,7 @@ void playlistAddSong(){
 
 
     printf("\nMasukkan Nama Album yang dipilih : ");
-    START(); //Reading \n;
+    START();
     Word inputUser2 = takeInput();
     if(IsMember(MapLagu, inputUser2)){
       printf("Daftar Lagu Album \e[1;32m%s\e[m oleh \e[1;32m%s\e[m :\n",inputUser.TabWord, inputUser2.TabWord);
@@ -446,7 +447,7 @@ void playlistAddSong(){
       }
 
       printf("Pilih ID Lagu yang dipilih : ");
-      START();//Reading \n
+      START();
       STARTWORD();
       int indexLagu = WordToInt(currentWord) -1 ;
       Lagu newLagu; 
@@ -460,6 +461,7 @@ void playlistAddSong(){
       }
 
       printf("Masukkan ID Playlist : ");
+      START();
       STARTWORD();
       printf("\n");
       int Index = WordToInt(currentWord) -1;
@@ -468,9 +470,9 @@ void playlistAddSong(){
       }else{
         if(Search(MapPlaylist.Elements[Index].Value, newLagu) == Nil_LL){
           InsVLast(&MapPlaylist.Elements[Index].Value, newLagu);
-          printf("\nLagu dengan judul \"%s\" pada album %s oleh penyanyi %s berhasil ditambahkan ke dalam playlist %s.",tempJudul.buffer[indexLagu].TabWord,inputUser2.TabWord, inputUser.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
+          printf("Lagu dengan judul \"%s\" pada album %s oleh penyanyi %s berhasil ditambahkan ke dalam playlist %s.\n",tempJudul.buffer[indexLagu].TabWord,inputUser2.TabWord, inputUser.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
         }else{
-          printf("\nLagu dengan judul \"%s\" pada album %s oleh penyanyi %s sudah terdapat di dalam playlist %s.",tempJudul.buffer[indexLagu].TabWord,inputUser2.TabWord, inputUser.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
+          printf("\nLagu dengan judul \"%s\" pada album %s oleh penyanyi %s sudah terdapat di dalam playlist %s.\n",tempJudul.buffer[indexLagu].TabWord,inputUser2.TabWord, inputUser.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
         }
       
       } 
@@ -482,7 +484,7 @@ void playlistAddSong(){
   else{
     printf("Penyanyi %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser.TabWord);
   }
-
+  START();
 }
 
 void playlistAddAlbum(){
