@@ -10,6 +10,8 @@
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
 
+#define MaxUser 102
+void LoginCommand();
 void playlistRemove();
 void playlistDelete();
 void playlistSwap();
