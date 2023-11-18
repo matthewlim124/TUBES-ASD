@@ -18,7 +18,6 @@ Lagu arrOfLagu[MaxUser];
 
 int idxLagu = 0;
 int userId = 0; 
-int numOfUser; 
 boolean statusLoad, userLogin = false; 
 void readCommand(){
   // Construct Set 
@@ -41,45 +40,100 @@ void readCommand(){
   // Construct MapPlaylist
   CreateEmptyPlaylist(&MapPlaylist);
   
-  int i =0; 
+  boolean masukSesi = false; 
   int stopStatus =0;
    while(!stopStatus){
     printf(">> ");
     STARTWORD();
-    i++;
+
     if(compareString(currentWord.TabWord, "START")){
-      char path[120] = "../../../save/newSave.txt";
+      if(masukSesi){
+        printf("Sesi sudah berjalan \n");
+        continue;
+      }
+      char path[120] = "../../../save/defSave.txt";
       boolean success = loadSave(path);
       if(success){
         printf("START berhasil dijalankan\n");
+        masukSesi = true; 
       }
       else{
         printf("Start gagal dijalankan");
         return; 
       }
     }
+
+    else if(compareString(currentWord.TabWord, "LOAD")){
+      ADVWORD();
+      if(masukSesi){
+        printf("Sesi sudah berjalan \n");
+        continue;
+      }
+      char path[120] = "../../../save/";
+      for(int i =0; i< currentWord.Length; i++){
+        path[i + 14] = currentWord.TabWord[i]; 
+      }
+      boolean success = loadSave(path);
+      if (success){
+        printf("File konfigurasi '%s' aplikasi berhasil dibaca. Wayangwave berhasil dijalankan\n", path);
+        masukSesi = true;
+      }
+      else printf("File konfiguras aplikasi gagal dibaca.\n");
+    }
+    else if(!masukSesi){
+      printf("Silahkan jalankan perintah \e[1;32mSTART;\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
+      START();
+    }
+
     else if(compareString("LOGIN", currentWord.TabWord)){
-      Word inputUser = takeInput();
-      currentWord = inputUser; 
-      printf("User : %s\n", currentWord.TabWord);
-      if(IsIn(SetDaftarUser, currentWord)){
-        for(int i =0; i< SetDaftarUser.Count; i++){
-          if(CompareWord(SetDaftarUser.buffer[i], currentWord)){
-            userLogin = true; 
-            userId = i+1; 
-            printf("Welcome \e[1;32m%s\e[m\n",currentWord.TabWord);
-            LoginCommand();
-            break;
-          }
-        }
+      if(userLogin){
+        printf("User sudah login dengan username %s\n",SetDaftarUser.buffer[userId-1].TabWord);
+        
       }
       else{
-        printf("User not Found\nPlease Register or Login\n");
+        START();
+        printf("Masukkan username user Wayangwave : ");
+        Word inputUser = takeInput();
+        currentWord = inputUser; 
+        if(IsIn(SetDaftarUser, currentWord)){
+          for(int i =0; i< SetDaftarUser.Count; i++){
+            if(CompareWord(SetDaftarUser.buffer[i], currentWord)){
+              userLogin = true; 
+              userId = i+1; 
+              printf("Welcome \e[1;32m%s\e[m\n",currentWord.TabWord);
+              LoginCommand();
+              break;
+            }
+          }
+        }
+        else{
+          printf("Tidak ada user dengan %s\nPlease Register or Login\n",currentWord.TabWord);
+      
+        }
       }
       START();
     }
-    else if(!userLogin){
+    else if(compareString("REGISTER", currentWord.TabWord)){
+      START();
+      if(!userLogin)registerCommand();
+      else{
+        printf("Sudah melakukan login dengan username %s \n", SetDaftarUser.buffer[userId-1].TabWord);
+      }
+    }
+    else if(!userLogin && userId == 0){
       printf("Silahkan Login atau Register terlebih dahulu.\n");
+      while(!endWord){
+        ADVWORD();
+      }
+      START();
+    }
+    else if(compareString("LOGOUT", currentWord.TabWord)){
+      updateSaveUser();
+      cleanUser();
+      printf("Logout dari akun %s\n",SetDaftarUser.buffer[userId-1].TabWord);
+      userLogin = false; 
+      userId = 0; 
+      START();
     }
     else if(compareString("SONG", currentWord.TabWord)){
       ADVWORD();
@@ -120,6 +174,7 @@ void readCommand(){
       else if(compareString("REMOVE", currentWord.TabWord)){
         queueRemove();
       }
+      START();
     }
     else if(compareString("PLAYLIST", currentWord.TabWord)){
       ADVWORD();
@@ -154,23 +209,47 @@ void readCommand(){
         playPlaylist();
       }
     }
-    else if(compareString(currentWord.TabWord, "LOAD")){
-      ADVWORD();
-      char path[120] = "../../../save/";
-      for(int i =0; i< currentWord.Length; i++){
-        path[i + 14] = currentWord.TabWord[i]; 
+    else{
+      printf("Perintah tidak valid silahkan jalankan \e[1;32mHelp;\e[m untuk melihat daftar perintah\n");
+      while(!endWord){
+        ADVWORD();
       }
-      boolean success = loadSave(path);
-      if (success)printf("File konfigurasi '%s' aplikasi berhasil dibaca. Wayangwave berhasil dijalankan\n", path);
-      else printf("File konfiguras aplikasi gagal dibaca.\n");
+      START();
     }
   }
+}
+
+void cleanUser(){
+  currentPlaying = MakeLagu();
+  CreateEmpty(&StackLagu);
+  CreateQueue(&QueueLagu);
+  CreateEmptyPlaylist(&MapPlaylist);
+}
+
+void registerCommand(){
+  printf("Masukkan username yang mau didaftarkan : "); 
+  Word userInput = takeInput();
+  if(IsIn(SetDaftarUser, userInput)){
+    printf("User sudah terdaftar, silahkan login\n");
+  }
+  else{
+    AddSet(&SetDaftarUser, userInput);
+    printf("User %s berhasil terdaftar..\nLogin sebagai %s..\n",userInput.TabWord, userInput.TabWord);
+    printf("Welcome \e[1;32m%s\e[m \n", userInput.TabWord);
+    cleanUser();
+    userLogin =true; 
+    userId = SetDaftarUser.Count; 
+    arrOfLagu[userId] = currentPlaying;
+    arrOfPlaylist[userId] = MapPlaylist; 
+    arrOfStack[userId] = StackLagu;
+    arrOfQueue[userId] = QueueLagu;
+  }
+  START();
 }
 
 void LoginCommand(){
   currentPlaying = MakeLagu();
   currentPlaying = arrOfLagu[userId];
-  if(!IsEmptyLagu(currentPlaying))printf("%s - %s - %s \n",currentPlaying.Penyanyi.TabWord, currentPlaying.Album.TabWord, currentPlaying.Judul.TabWord);
 
   StackLagu = arrOfStack[userId];
   QueueLagu = arrOfQueue[userId];
@@ -662,6 +741,7 @@ void statusCommand(){
     printf("Your queue is empty.\n");
   }
   printf("\n");
+  START();
 }
 
 void songPrev(){
@@ -708,7 +788,7 @@ boolean loadSave(char *filePath){
   // If save file exists
   else{
     defaultSave();
-    for(int abcd = 0 ; abcd < numOfUser; abcd++){
+    for(int abcd = 0 ; abcd < SetDaftarUser.Count; abcd++){
       CreateQueue(&QueueLagu);
       CreateEmpty(&StackLagu);
       CreateEmptyPlaylist(&MapPlaylist);
@@ -723,18 +803,15 @@ boolean loadSave(char *filePath){
 
         inputCurrent = takeInput();
         currentPlaying.Judul = inputCurrent;
-        printf("Current Playing : %s - %s - %s\n", currentPlaying.Penyanyi.TabWord, currentPlaying.Album.TabWord, currentPlaying.Judul.TabWord);
       }
       else{
         currentPlaying = MakeLagu();
-        printf("Current Playing : Tidak memutar lagu apapun\n");
       }
       arrOfLagu[abcd+1] = currentPlaying; 
 
       STARTWORD();
       int index = WordToInt(currentWord); 
 
-      printf("\nInput Queue\n================================\n\n");
       for(int i =0 ;i < index; i++){
         Lagu tempLagu = MakeLagu();
         // Input dari save, Penyanyi ke ADT Lagu
@@ -769,15 +846,15 @@ boolean loadSave(char *filePath){
         }
 
         // Output Lagu dari file Save untuk testing
-        tempLagu.Judul = tempJudul;
-        tempLagu.Album = tempAlbum; 
-        printf("Penyanyi : %s\n",tempLagu.Penyanyi.TabWord);
-        printf("Album : %s\n",tempLagu.Album.TabWord);
-        printf("Judul : %s\n", tempLagu.Judul.TabWord);
-        DaftarLagu.A[i] = tempLagu;
-        AddSet(&SetDaftarAlbum, tempLagu.Album);
-        AddSet(&SetDaftarPenyanyi, tempLagu.Penyanyi);
-        printf("Panjang Set : %d\n", SetDaftarPenyanyi.Count);
+        //tempLagu.Judul = tempJudul;
+        //tempLagu.Album = tempAlbum; 
+        //printf("Penyanyi : %s\n",tempLagu.Penyanyi.TabWord);
+        //printf("Album : %s\n",tempLagu.Album.TabWord);
+        //printf("Judul : %s\n", tempLagu.Judul.TabWord);
+        //DaftarLagu.A[i] = tempLagu;
+        //AddSet(&SetDaftarAlbum, tempLagu.Album);
+        //AddSet(&SetDaftarPenyanyi, tempLagu.Penyanyi);
+        //printf("Panjang Set : %d\n", SetDaftarPenyanyi.Count);
 
         //printf("Penyanyi : %s\n",SetDaftarLagu.buffer[idxLagu].Penyanyi.TabWord);
         //printf("Album : %s\n",SetDaftarLagu.buffer[idxLagu].Album.TabWord);
@@ -785,7 +862,7 @@ boolean loadSave(char *filePath){
         
         enqueue(&QueueLagu, tempLagu);
         idxLagu++;
-        printf("\n");
+        
 
       } //End For
       arrOfQueue[abcd+1] = QueueLagu; 
@@ -795,8 +872,8 @@ boolean loadSave(char *filePath){
       //Taking for Input (Stack - History Song)
       STARTWORD();
       int idxStack = WordToInt(currentWord) ;
-      printf("\nInput Stack\n========================================\n\n");
-      printf("Second Input : %d\n", idxStack);
+      //printf("\nInput Stack\n========================================\n\n");
+      //printf("Second Input : %d\n", idxStack);
       for(int i =0; i< idxStack; i++){
         Lagu newLagu = MakeLagu();
         Word Penyanyi = takeInput();
@@ -809,7 +886,7 @@ boolean loadSave(char *filePath){
         Lagu testLagu; 
         Pop(&StackLagu, &testLagu);
         Push(&StackLagu, newLagu);
-        printf("Penyanyi : %s\nAlbum : %s\nJudul : %s\n\n", testLagu.Penyanyi.TabWord, testLagu.Album.TabWord, testLagu.Judul.TabWord);
+        //printf("Penyanyi : %s\nAlbum : %s\nJudul : %s\n\n", testLagu.Penyanyi.TabWord, testLagu.Album.TabWord, testLagu.Judul.TabWord);
       }
       arrOfStack[abcd + 1] = StackLagu; 
 
@@ -819,7 +896,7 @@ boolean loadSave(char *filePath){
 
       STARTWORD();
       int jumlahPlaylist=WordToInt(currentWord);
-      printf("Jumlah Playlist : %d\n", jumlahPlaylist);
+      //printf("Jumlah Playlist : %d\n", jumlahPlaylist);
       for(int i =0; i< jumlahPlaylist; i++){
         LinkedList temp; 
         CreateEmptyLL(&temp);
@@ -835,8 +912,8 @@ boolean loadSave(char *filePath){
           ConcatWord(currentWord, &space);
           ConcatWord(space, &tempPlaylist);
         }
-        printf("Name of Playlist: %s\n",tempPlaylist.TabWord);
-        printf("Banyak Lagu dalam Album %s : %d\n",tempPlaylist.TabWord,jumlahLagu);
+        //printf("Name of Playlist: %s\n",tempPlaylist.TabWord);
+        //printf("Banyak Lagu dalam Album %s : %d\n",tempPlaylist.TabWord,jumlahLagu);
 
         for(int j =0; j< jumlahLagu; j++){
           Lagu tempLagu = MakeLagu();
@@ -875,13 +952,13 @@ boolean loadSave(char *filePath){
           }
           tempLagu.Judul = tempJudul;
 
-          printf("Judul Lagu ke-%d : %s\n",j+1, tempJudul.TabWord );
+          //printf("Judul Lagu ke-%d : %s\n",j+1, tempJudul.TabWord );
 
           // Using Map of LinkedList as Playlist   
           
           addressLinkedList t = Alokasi(tempLagu);
           InsertLast(&temp, t);
-          printf("Dalam LinkedList : %s, %s, %s\n",t->info.Penyanyi.TabWord, t->info.Album.TabWord, t->info.Judul.TabWord);
+          //printf("Dalam LinkedList : %s, %s, %s\n",t->info.Penyanyi.TabWord, t->info.Album.TabWord, t->info.Judul.TabWord);
         }
         InsertPlaylist(&MapPlaylist, tempPlaylist, temp);
       }
@@ -889,16 +966,16 @@ boolean loadSave(char *filePath){
       arrOfPlaylist[abcd+1]= MapPlaylist;
       
       // Checking for Map playlist; 
-      printf("\nTesting for Playlist\n");
-      Word newW;
-      SetWord(&newW,"BLACKPINK My Top Three");
-      LinkedList testing = ValuePlaylist(MapPlaylist, newW);
-      addressLinkedList P; 
-      P = First(testing);
-      while(P != Nil_LL){
-        printf("%s, %s, %s\n",P->info.Album.TabWord, P->info.Judul.TabWord, P->info.Penyanyi.TabWord);
-        P = P->next;
-      }
+      //printf("\nTesting for Playlist\n");
+      //Word newW;
+      //SetWord(&newW,"BLACKPINK My Top Three");
+      //LinkedList testing = ValuePlaylist(MapPlaylist, newW);
+      //addressLinkedList P; 
+      //P = First(testing);
+      //while(P != Nil_LL){
+      //  printf("%s, %s, %s\n",P->info.Album.TabWord, P->info.Judul.TabWord, P->info.Penyanyi.TabWord);
+      //  P = P->next;
+      //}
     }
   }
   freopen("CONIN$", "r", stdin);
@@ -906,14 +983,13 @@ boolean loadSave(char *filePath){
 }
 
 boolean defaultSave(){
-  printf("Default Save\n|=======================|\n");
   START();
   int idxP = currentChar - '0';
-  printf("Jumlah Penyanyi : %c\n", currentChar);
+  //printf("Jumlah Penyanyi : %c\n", currentChar);
   STARTWORD();
   for(int k = 0; k < idxP; k++){
     START(); // Reading num of albums
-    printf("Jumlah Album : %c\n", currentChar);
+    //printf("Jumlah Album : %c\n", currentChar);
     int idxA = currentChar -'0';
 
     // Reading Penyanyi
@@ -926,14 +1002,14 @@ boolean defaultSave(){
       ConcatWord(currentWord, &space);
       ConcatWord(space, &tempPenyanyi);
     }
-    printf("Penyanyi : %s\n", tempPenyanyi.TabWord);
+    //printf("Penyanyi : %s\n", tempPenyanyi.TabWord);
     AddSet(&SetDaftarPenyanyi, tempPenyanyi);
     SetOfWord newSet; 
     CreateSet(&newSet);
 
     for(int j = 0; j < idxA; j++){
       START(); // Reading num of titles
-      printf("Jumlah Judul : %c\n", currentChar);
+      //printf("Jumlah Judul : %c\n", currentChar);
       int idxJ = currentChar - '0'; 
 
       // Membaca Album 
@@ -946,7 +1022,7 @@ boolean defaultSave(){
         ConcatWord(currentWord, &space);
         ConcatWord(space, &tempAlbum);
       }
-      printf("Album : %s\n", tempAlbum.TabWord);
+      //printf("Album : %s\n", tempAlbum.TabWord);
       AddSet(&newSet, tempAlbum);
 
       SetOfWord setJudul; 
@@ -966,7 +1042,7 @@ boolean defaultSave(){
 
         AddSet(&setJudul, tempJudul);
         
-        printf("Judul : %s\n", tempJudul.TabWord);  
+        //printf("Judul : %s\n", tempJudul.TabWord);  
       }
 
       Insert(&MapLagu, tempAlbum, setJudul);
@@ -978,7 +1054,7 @@ boolean defaultSave(){
   
   STARTWORD();
   int JumlahInput = WordToInt(currentWord);
-  numOfUser = JumlahInput;
+  int numOfUser = JumlahInput;
   for(int i = 0 ; i < JumlahInput; i++){
     STARTWORD();
     Word tempInput = currentWord;
@@ -991,7 +1067,7 @@ boolean defaultSave(){
     }
 
     AddSet(&SetDaftarUser, tempInput);  
-    printf("User : %s\n", SetDaftarUser.buffer[i].TabWord);  
+    //printf("User : %s\n", SetDaftarUser.buffer[i].TabWord);  
   }
   
   /*Notes program akan error (infinite loop) 
@@ -999,7 +1075,16 @@ boolean defaultSave(){
   */ 
   return true; 
 }
+void updateSaveUser(){
+  arrOfPlaylist[userId] = MapPlaylist;
+  arrOfLagu[userId] = currentPlaying;
+  arrOfStack[userId] = StackLagu;
+  arrOfQueue[userId] = QueueLagu;
+}
+
 void saveCommand(boolean Quit){
+  updateSaveUser();
+
   Word filePath; 
   if(!Quit){
     ADVWORD();
@@ -1033,57 +1118,71 @@ void saveCommand(boolean Quit){
       }
     }
   }
-  //Bagian CurrentPlaying
-  if(IsEmptyLagu(currentPlaying)){
-    fprintf(file,"-\n");
+  //Bagian Daftar User 
+  fprintf(file, "%d\n",numOfSinger);
+  for(int ac = 0; ac<SetDaftarUser.Count; ac++){
+    fprintf(file, "%s\n",SetDaftarUser.buffer[ac].TabWord);
   }
-  else fprintf(file, "%s;%s;%s\n", currentPlaying.Penyanyi.TabWord, currentPlaying.Album.TabWord, currentPlaying.Judul.TabWord);
-  //BAGIAN QUEUE 
-  int numOfQ = QueueLagu.idxTail+1;
-  fprintf(file,"%d\n",numOfQ);
-  Queue newQueue = QueueLagu; 
-  for(int i =0; i< numOfQ; i++){
-    Lagu temp; 
-    dequeue(&newQueue, &temp);
-    fprintf(file,"%s;%s;%s\n",temp.Penyanyi.TabWord, temp.Album.TabWord, temp.Judul.TabWord);
-  }
+  
+  for(int n = 0 ; n < SetDaftarUser.Count; n++){
+    currentPlaying = arrOfLagu[n+1];
+    StackLagu = arrOfStack[n+1];
+    MapPlaylist = arrOfPlaylist[n+1];
+    QueueLagu = arrOfQueue[n+1];
 
-  //BAGIAN STACK 
-  Stack newStack;
-  CreateEmpty(&newStack);
-  int cnt =0; 
-  while(!IsEmptyStack(StackLagu)){
-    Lagu temp; 
-    Pop(&StackLagu, &temp);
-    Push(&newStack, temp);
-    cnt++; 
-  }
-  fprintf(file, "%d\n",cnt);
-  while(cnt){
-    Lagu temp; 
-    Pop(&newStack, &temp);
-    fprintf(file, "%s;%s;%s\n",temp.Penyanyi.TabWord, temp.Album.TabWord, temp.Judul.TabWord);
-    Push(&StackLagu,temp);
-    cnt--;
-  }
+    //Bagian CurrentPlaying
+    if(IsEmptyLagu(currentPlaying)){
+      fprintf(file,"-\n");
+    }
+    else fprintf(file, "%s;%s;%s\n", currentPlaying.Penyanyi.TabWord, currentPlaying.Album.TabWord, currentPlaying.Judul.TabWord);
+    //BAGIAN QUEUE 
+    int numOfQ = QueueLagu.idxTail+1;
+    fprintf(file,"%d\n",numOfQ);
+    Queue newQueue = QueueLagu; 
+    for(int i =0; i< numOfQ; i++){
+      Lagu temp; 
+      dequeue(&newQueue, &temp);
+      fprintf(file,"%s;%s;%s\n",temp.Penyanyi.TabWord, temp.Album.TabWord, temp.Judul.TabWord);
+    }
 
-  //BAGIAN PLAYLIST
-  int numOfPlaylist = MapPlaylist.Count; 
-  fprintf(file, "%d\n",numOfPlaylist);
-  for(int i =0; i<numOfPlaylist; i++){
-    Word Key = MapPlaylist.Elements[i].Key; 
-    LinkedList l = MapPlaylist.Elements[i].Value;
-    int numOfSong = NbElmt(l);
-    fprintf(file, "%d %s\n",numOfSong,Key.TabWord);
-    addressLinkedList p = l.First; 
-    while(p != Nil_LL){
-      fprintf(file, "%s;%s;%s\n",p->info.Penyanyi.TabWord, p->info.Album.TabWord, p->info.Judul.TabWord);
-      p = p->next;
+    //BAGIAN STACK 
+    Stack newStack;
+    CreateEmpty(&newStack);
+    int cnt =0; 
+    while(!IsEmptyStack(StackLagu)){
+      Lagu temp; 
+      Pop(&StackLagu, &temp);
+      Push(&newStack, temp);
+      cnt++; 
+    }
+    fprintf(file, "%d\n",cnt);
+    while(cnt){
+      Lagu temp; 
+      Pop(&newStack, &temp);
+      fprintf(file, "%s;%s;%s\n",temp.Penyanyi.TabWord, temp.Album.TabWord, temp.Judul.TabWord);
+      Push(&StackLagu,temp);
+      cnt--;
+    }
+
+    //BAGIAN PLAYLIST
+    int numOfPlaylist = MapPlaylist.Count; 
+    fprintf(file, "%d\n",numOfPlaylist);
+    for(int i =0; i<numOfPlaylist; i++){
+      Word Key = MapPlaylist.Elements[i].Key; 
+      LinkedList l = MapPlaylist.Elements[i].Value;
+      int numOfSong = NbElmt(l);
+      fprintf(file, "%d %s\n",numOfSong,Key.TabWord);
+      addressLinkedList p = l.First; 
+      while(p != Nil_LL){
+        fprintf(file, "%s;%s;%s\n",p->info.Penyanyi.TabWord, p->info.Album.TabWord, p->info.Judul.TabWord);
+        p = p->next;
+      }
     }
   }
 
   fclose(file);
   printf("File berhasl disimpan\n"); 
+  START();
 
 }
 

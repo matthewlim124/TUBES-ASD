@@ -11,6 +11,9 @@
 #include "../../ADT/Playlist/playlist.h"
 
 #define MaxUser 102
+void updateSaveUser();
+void cleanUser();
+void registerCommand();
 void LoginCommand();
 void playlistRemove();
 void playlistDelete();

@@ -32,7 +32,7 @@ void ADV()
                        Jika  currentChar = MARK maka EOP akan menyala (true) */
 
        /* Algoritma */
-        retval = fscanf(pita, "%c", &currentChar);
+       retval = fscanf(pita, "%c", &currentChar);
        if(currentChar == '\n' || currentChar == ';'){
          EOP = true;
        };
