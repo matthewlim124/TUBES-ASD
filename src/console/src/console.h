@@ -10,9 +10,9 @@
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
 
+void playlistRemove();
 void playlistDelete();
 void playlistSwap();
-void playlistRemove();
 void playlistAddAlbum();
 void playlistAddSong();
 void queueRemove();
@@ -29,7 +29,7 @@ boolean defaultSave(); // Meload file save default
 boolean loadSave(char *filePath); // Meload file save 
 boolean compareString(char *a, char *b);
 void quitCommand(int *stopStatus);
-void saveCommand();
+void saveCommand(boolean Quit);
 void statusCommand();
 Word takeInput();
 void songNext();

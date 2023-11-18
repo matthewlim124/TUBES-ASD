@@ -47,15 +47,4 @@ void dequeue(Queue *q, ElType *val){
     q->idxHead ++; 
   }
 }
-void displayQueue(Queue q){
-  printf("["); 
-  int index= q.idxHead; 
-  if(!isEmpty(q)){
-    while(index != q.idxTail){
-      printf("%d,", q.buffer[index]); 
-      index++;
-    }
-    printf("%d",q.buffer[index]);
-  }
-  printf("]\n");
-}
+

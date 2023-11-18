@@ -182,7 +182,7 @@ void DelFirst (LinkedList *L, addressLinkedList *P)
 /* First element yg baru adalah suksesor elemen pertama yang lama */
 {
   *P = First(*L);
-  First(*L) = Next(First(*L));
+  L->First = L->First->next;
   Next(*P) = Nil_LL;
 }
 

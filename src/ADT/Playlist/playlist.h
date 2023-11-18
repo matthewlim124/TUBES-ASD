@@ -19,8 +19,8 @@ typedef LinkedList IsiPlaylist;
 typedef Word JudulPlaylist;
 
 typedef struct {
-        JudulPlaylist Key;
-        IsiPlaylist Value;
+	JudulPlaylist Key;
+  IsiPlaylist Value;
 } LinkedListPlaylist;
 
 typedef struct {
