@@ -9,9 +9,9 @@ int main() {
 
     CreateEmpty(&S);
 
-    printf("Is Stack Empty? %s\n", IsEmptyStack(S) ? "Yes" : "No");
+    printf("Apakah stack kosong? %s\n", IsEmptyStack(S) ? "Ya" : "Tidak");
 
-    printf("Pushing elements into the stack...\n");
+    printf("Menambahkan elemen ke dalam stack...\n");
     for (int i = 1; i <= 5; ++i) {
         infotype newItem;
         Word penyanyi, album, judul;
@@ -26,23 +26,23 @@ int main() {
 
         if (!IsFull(S)) {
             Push(&S, newItem);
-            printf("Pushed item with ID %d into the stack\n", i);
+            printf("Menambahkan item dengan ID %d ke dalam stack\n", i);
         } else {
-            printf("Stack is full. Cannot push more elements.\n");
+            printf("Stack penuh. Tidak bisa menambahkan item lagi.\n");
             break;
         }
     }
 
-    printf("Is Stack Full? %s\n", IsFull(S) ? "Yes" : "No");
+    printf("Apakah stack penuh? %s\n", IsFull(S) ? "Ya" : "Tidak");
 
-    printf("Popping elements from the stack...\n");
+    printf("Mengeluarkan item dari stack.\n");
     while (!IsEmptyStack(S)) {
         Pop(&S, &item);
-        printf("Popped item from the stack\n");
+        printf("Mengeluarkan item dari stack\n");
         // Lakukan operasi atau manipulasi sesuai kebutuhan dengan item yang di-pop
     }
 
-    printf("Is Stack Empty? %s\n", IsEmptyStack(S) ? "Yes" : "No");
+    printf("Apakah stack kosong? %s\n", IsEmptyStack(S) ? "Ya" : "Tidak");
 
     return 0;
 }
