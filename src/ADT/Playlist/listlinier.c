@@ -299,6 +299,7 @@ int NbElmt (LinkedList L)
 }
 
 
+
 /****************** PROSES TERHADAP LIST ******************/
 void InversLinkedList (LinkedList *L)
 /* I.S. sembarang. */

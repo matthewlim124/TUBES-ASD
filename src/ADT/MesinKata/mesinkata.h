@@ -36,6 +36,13 @@ void ADVWORD();
           Jika currentChar = MARK, EndWord = true.
    Proses : Akuisisi kata menggunakan procedure SalinWord */
 
+void cleanWORD();
+/* Membersihkan isi dari currentWord
+   I.S. : currentWord berisi kata yang mungkin sudah diakuisisi
+   F.S. : currentWord tidak berisi kata apa pun (kosong), panjang kata (Length) diatur menjadi 0
+          serta setiap elemen pada currentWord.TabWord diatur menjadi karakter null ('\0') */
+
+
 void CopyWord();
 /* Mengakuisisi kata, menyimpan dalam currentWord
    I.S. : currentChar adalah karakter pertama dari kata
