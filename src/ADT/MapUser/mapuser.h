@@ -22,10 +22,10 @@ typedef int address;
 
 //MapUser memiliki 3 values : Stack - History, Queue, dan Daftar Playlist
 typedef struct {
-	UserName Key;
-  Stack HistoryUser; 
-  Queue QueueUser; 
-  Playlist PlaylistUser;
+        UserName Key;
+        Stack HistoryUser; 
+        Queue QueueUser; 
+        Playlist PlaylistUser;
 } UserInformation;
 
 typedef struct {

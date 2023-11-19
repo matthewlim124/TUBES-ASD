@@ -3,10 +3,11 @@
 
 int main() {
     // Membuat list baru
-    List newList = MakeList();
-    
+    List newList;
+    newList = MakeList(newList);
+
     // Memeriksa apakah list kosong
-    printf("Is the list empty? %s\n", IsEmpty(newList) ? "Yes" : "No");
+    printf("Apakah list kosong? %s\n", IsEmpty(newList) ? "Ya" : "Tidak");
     
     // Menambahkan elemen ke list
     InsertLast(&newList, 5);
@@ -15,10 +16,10 @@ int main() {
     InsertLast(&newList, 20);
     
     // Menampilkan panjang list
-    printf("Length of the list: %d\n", Length(newList));
+    printf("Panjang list adalah: %d\n", Length(newList));
     
     // Menampilkan isi dari list
-    printf("Elements of the list: ");
+    printf("Elements dari list: ");
     for (int i = 0; i <= LastIdx(newList); i++) {
         printf("%d ", Get(newList, i));
     }
@@ -28,7 +29,7 @@ int main() {
     DeleteFirst(&newList);
     
     // Menampilkan isi dari list setelah penghapusan elemen pertama
-    printf("Elements of the list after deleting first element: ");
+    printf("Element dari list setelah penghapusan elemen pertama: ");
     for (int i = 0; i <= LastIdx(newList); i++) {
         printf("%d ", Get(newList, i));
     }
@@ -38,7 +39,7 @@ int main() {
     InsertAt(&newList, 25, 2);
     
     // Menampilkan isi dari list setelah penambahan elemen ke-25
-    printf("Elements of the list after inserting 25 at index 2: ");
+    printf("Element dari list setelah menambahkan 25 di index 2: ");
     for (int i = 0; i <= LastIdx(newList); i++) {
         printf("%d ", Get(newList, i));
     }
@@ -48,7 +49,7 @@ int main() {
     DeleteLast(&newList);
     
     // Menampilkan isi dari list setelah penghapusan elemen terakhir
-    printf("Elements of the list after deleting last element: ");
+    printf("Elements dari list setelah menghapus elemen terakhir: ");
     for (int i = 0; i <= LastIdx(newList); i++) {
         printf("%d ", Get(newList, i));
     }
@@ -60,7 +61,13 @@ int main() {
     
     // Mengecek validitas indeks
     IdxType indexToCheck = 3;
-    printf("Is index %d valid? %s\n", indexToCheck, IsIdxValid(newList, indexToCheck) ? "Yes" : "No");
+    printf("Apakah index %d valid? %s\n", indexToCheck, IsIdxValid(newList, indexToCheck) ? "Ya" : "Tidak");
+
+    // ...
+    printf("Program selesai. Tekan tombol apapun untuk keluar.\n");
+    getchar(); // Tahan tampilan konsol
+    return 0;
+
     
     return 0;
 }

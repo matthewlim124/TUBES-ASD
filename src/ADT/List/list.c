@@ -1,8 +1,7 @@
 # include "list.h"
 #include <stdio.h>
 
-List MakeList(){
-  List sebuahList;
+List MakeList(List sebuahList){
   for(int i =0; i<=MaxEl; i++){
     sebuahList.A[i] = Mark; 
   } 
