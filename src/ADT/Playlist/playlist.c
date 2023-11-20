@@ -1,17 +1,17 @@
 #include "playlist.h"
 
-void CreateEmptyPlaylist(DaftarPlaylist *M){
+void CreateEmptyPlaylist(Playlist *M){
   M->Count = NilMap; 
 }
 
-boolean IsEmptyPlaylist(DaftarPlaylist M){
+boolean IsEmptyPlaylist(Playlist M){
   return M.Count == NilMap;
 }
-boolean IsFullPlaylist(DaftarPlaylist M){
-  return M.Count == MaxElMap;
+boolean IsFullPlaylist(Playlist M){
+  return M.Count == MaxElMapPlaylist;
 }
 
-IsiPlaylist ValuePlaylist (DaftarPlaylist M, Word k){
+IsiPlaylist ValuePlaylist (Playlist M, Word k){
   LinkedList tempLagu; 
   CreateEmptyLL(&tempLagu);
   for(int i =0; i< M.Count; i++){
@@ -22,7 +22,7 @@ IsiPlaylist ValuePlaylist (DaftarPlaylist M, Word k){
   return tempLagu;
 }
 
-boolean IsMemberPlaylist(DaftarPlaylist M, JudulPlaylist k){
+boolean IsMemberPlaylist(Playlist M, JudulPlaylist k){
   for(int i =0; i< M.Count; i++){
     if(CompareWord(k, M.Elements[i].Key)){
       return true; 
@@ -31,7 +31,7 @@ boolean IsMemberPlaylist(DaftarPlaylist M, JudulPlaylist k){
   return false; 
 }
 
-void InsertPlaylist(DaftarPlaylist *M, JudulPlaylist k, IsiPlaylist v){
+void InsertPlaylist(Playlist *M, JudulPlaylist k, IsiPlaylist v){
   if(!IsFullPlaylist(*M) && !IsMemberPlaylist(*M,k)){
     M->Elements[M->Count].Key = k; 
     M->Elements[M->Count].Value = v;
@@ -39,7 +39,7 @@ void InsertPlaylist(DaftarPlaylist *M, JudulPlaylist k, IsiPlaylist v){
   }
 }
 
-void DeletePlaylist (DaftarPlaylist *M, JudulPlaylist k){
+void DeletePlaylist (Playlist *M, JudulPlaylist k){
   boolean found = false;
   for(int i =0; i< M->Count; i++){
     if(CompareWord(M->Elements[i].Key, k)){

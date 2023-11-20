@@ -10,6 +10,11 @@
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
 
+#define MaxUser 102
+void updateSaveUser();
+void cleanUser();
+void registerCommand();
+void LoginCommand();
 void playlistRemove();
 void playlistDelete();
 void playlistSwap();
@@ -24,7 +29,7 @@ void queueClear();
 void playSong();
 void queueSong();
 void playlistCreate();
-void readCommand(); // Membaca Command dari User
+void readCommand(int status); // Membaca Command dari User
 boolean defaultSave(); // Meload file save default
 boolean loadSave(char *filePath); // Meload file save 
 boolean compareString(char *a, char *b);

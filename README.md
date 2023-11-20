@@ -14,3 +14,4 @@ Membuat WayangWave
 ![100%](https://progress-bar.dev/100?title=Queue)
 ![100%](https://progress-bar.dev/100?title=Play)
 ![100%](https://progress-bar.dev/100?title=Save)
+![100%](https://progress-bar.dev/100?title=MultiUser)
