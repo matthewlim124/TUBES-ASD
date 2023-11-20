@@ -80,7 +80,7 @@ void readCommand(int status){
         printf("File konfigurasi '%s' aplikasi berhasil dibaca. Wayangwave berhasil dijalankan\n", path);
         masukSesi = true;
       }
-      else printf("File konfiguras aplikasi gagal dibaca.\n");
+      else printf("File konfigurasi aplikasi gagal dibaca.\n");
     }
     else if(!masukSesi){
       printf("Silahkan jalankan perintah \e[1;32mSTART;\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
