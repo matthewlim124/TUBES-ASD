@@ -103,7 +103,7 @@ void readCommand(int status){
     }
 
     else if(!masukSesi){
-      printf("Silahkan jalankan perintah \e[1;32mSTART;\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
+      printf("Silahkan jalankan perintah \e[1;32mSTART\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
       START();
     }
 
@@ -232,7 +232,7 @@ void readCommand(int status){
       }
     }
     else{
-      printf("Perintah tidak valid silahkan jalankan \e[1;32mHELP;\e[m untuk melihat daftar perintah\n");
+      printf("Perintah tidak valid silahkan jalankan \e[1;32mHELP\e[m untuk melihat daftar perintah\n");
       while(!endWord){
         ADVWORD();
       }
