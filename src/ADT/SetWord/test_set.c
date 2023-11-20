@@ -15,7 +15,7 @@ int main(){
   
   AddSet(&sebuahSet, sWord);
 
-  printf("Masukkan value ke set \n");
+  printf("Inserting some value to set \n");
   if(IsEmpty(sebuahSet))printf("Set Kosong\n"); 
   else{
     printf("Set Tidak Kosong, %d \n",sebuahSet.Count);

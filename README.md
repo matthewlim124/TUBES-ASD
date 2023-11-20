@@ -15,5 +15,3 @@ Membuat WayangWave
 ![100%](https://progress-bar.dev/100?title=Play)
 ![100%](https://progress-bar.dev/100?title=Save)
 ![100%](https://progress-bar.dev/100?title=MultiUser)
-
-Tugas besar IF2111 Algoritma dan Struktur Data STI - K01 Kelompok 10

@@ -29,7 +29,7 @@ void queueClear();
 void playSong();
 void queueSong();
 void playlistCreate();
-void readCommand(); // Membaca Command dari User
+void readCommand(int status); // Membaca Command dari User
 boolean defaultSave(); // Meload file save default
 boolean loadSave(char *filePath); // Meload file save 
 boolean compareString(char *a, char *b);
