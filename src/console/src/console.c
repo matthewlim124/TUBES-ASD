@@ -42,7 +42,7 @@ void readCommand(){
   
   boolean masukSesi = false; 
   int stopStatus =0;
-   while(!stopStatus){
+    while(!stopStatus){
     printf(">> ");
     STARTWORD();
 
