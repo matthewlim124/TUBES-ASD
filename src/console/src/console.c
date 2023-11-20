@@ -109,12 +109,8 @@ void readCommand(int status){
     }
 
     else if(!masukSesi){
-<<<<<<< HEAD
       printf("Silahkan jalankan perintah \e[1;32mSTART;\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
-=======
       printf("Silahkan jalankan perintah \e[1;32mSTART\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
-      START();
->>>>>>> 441e16ee1f5920ae55fbe8179dab8e581ec80f90
     }
 
     else if(compareString("LOGIN", currentWord.TabWord)){
