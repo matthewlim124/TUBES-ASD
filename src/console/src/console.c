@@ -211,8 +211,26 @@ void readCommand(int status){
         playPlaylist();
       }
     }
+    else if(compareString("HELP", currentWord.TabWord)){
+      if(masukSesi){
+        printf("=====[ Menu Help WayangWave ]=====\n");
+        printf("1. START -> Untuk masuk sesi baru\n");
+        printf("2. LOAD -> Untuk memulai sesi berdasarkan file konfigurasi\n");
+      } else {
+        printf("=====[ Menu Help WayangWave ]=====\n");
+        printf("1. LIST -> Untuk menampilkan daftar lagu, playlist, album, dan lagu\n");
+        printf("2. PLAY -> Untuk memulai suatu lagu\n");
+        printf("3. QUEUE -> Untuk mengatur antrian lagu\n");
+        printf("4. SONG -> Untuk mengatur lagu yang sedang diputar\n");
+        printf("5. PLAYLIST -> Untuk mengatur playlist\n");
+        printf("6. STATUS -> Untuk menampilkan status lagu yang sedang diputar dan antrian lagu\n");
+        printf("7. HELP -> Untuk menampilkan menu help\n");
+        printf("9. SAVE -> Untuk menyimpan state ke dalam file\n");
+        printf("10. QUIT -> Untuk keluar dari sesi\n");
+      }
+    }
     else{
-      printf("Perintah tidak valid silahkan jalankan \e[1;32mHelp;\e[m untuk melihat daftar perintah\n");
+      printf("Perintah tidak valid silahkan jalankan \e[1;32mHELP;\e[m untuk melihat daftar perintah\n");
       while(!endWord){
         ADVWORD();
       }
