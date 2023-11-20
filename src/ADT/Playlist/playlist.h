@@ -20,7 +20,7 @@ typedef Word JudulPlaylist;
 
 typedef struct {
 	JudulPlaylist Key;
-        IsiPlaylist Value;
+  IsiPlaylist Value;
 } LinkedListPlaylist;
 
 typedef struct {

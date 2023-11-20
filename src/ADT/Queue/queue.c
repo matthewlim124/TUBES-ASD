@@ -48,15 +48,3 @@ void dequeue(Queue *q, ElType *val){
   }
 }
 
-void displayQueue(Queue q){
-  if(isEmpty(q)){
-    printf("Queue kosong!\n");
-  }
-  else{
-    int idx = q.idxHead;
-    while(idx <= q.idxTail){
-      printf("%s - %s - %s\n", q.buffer[idx].Penyanyi.TabWord, q.buffer[idx].Album.TabWord, q.buffer[idx].Judul.TabWord);
-      idx++;
-    }
-  }
-}
