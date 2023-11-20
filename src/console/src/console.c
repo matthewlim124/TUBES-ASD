@@ -225,8 +225,8 @@ void readCommand(int status){
         printf("5. PLAYLIST -> Untuk mengatur playlist\n");
         printf("6. STATUS -> Untuk menampilkan status lagu yang sedang diputar dan antrian lagu\n");
         printf("7. HELP -> Untuk menampilkan menu help\n");
-        printf("9. SAVE -> Untuk menyimpan state ke dalam file\n");
-        printf("10. QUIT -> Untuk keluar dari sesi\n");
+        printf("8. SAVE -> Untuk menyimpan state ke dalam file\n");
+        printf("9. QUIT -> Untuk keluar dari sesi\n");
       }
     }
     else{
