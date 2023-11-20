@@ -44,10 +44,14 @@ void readCommand(int status){
   
   boolean masukSesi = false; 
   int stopStatus =0;
-    while(!stopStatus){
+  int cnt =0;
+  boolean statusEnter = false; 
+  while(!stopStatus){
+    if(cnt != 0 && !statusEnter)START();
+    statusEnter = false;
     printf(">> ");
     STARTWORD();
-
+    cnt++;
     if(compareString(currentWord.TabWord, "START")){
       if(masukSesi){
         printf("Sesi sudah berjalan \n");
@@ -58,9 +62,10 @@ void readCommand(int status){
       if(success){
         printf("START berhasil dijalankan\n");
         masukSesi = true; 
+        statusEnter = true;
       }
       else{
-        printf("Start gagal dijalankan");
+        printf("Start gagal dijalankan\n");
         return; 
       }
     }
@@ -79,12 +84,12 @@ void readCommand(int status){
       if (success){
         printf("File konfigurasi '%s' aplikasi berhasil dibaca. Wayangwave berhasil dijalankan\n", path);
         masukSesi = true;
+        statusEnter = true; 
       }
       else printf("File konfigurasi aplikasi gagal dibaca.\n");
     }
     else if(!masukSesi){
       printf("Silahkan jalankan perintah \e[1;32mSTART;\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
-      START();
     }
 
     else if(compareString("LOGIN", currentWord.TabWord)){
@@ -113,7 +118,6 @@ void readCommand(int status){
       
         }
       }
-      START();
     }
     else if(compareString("REGISTER", currentWord.TabWord)){
       START();
@@ -127,7 +131,6 @@ void readCommand(int status){
       while(!endWord){
         ADVWORD();
       }
-      START();
     }
     else if(compareString("LOGOUT", currentWord.TabWord)){
       updateSaveUser();
@@ -135,7 +138,6 @@ void readCommand(int status){
       printf("Logout dari akun %s\n",SetDaftarUser.buffer[userId-1].TabWord);
       userLogin = false; 
       userId = 0; 
-      START();
     }
     else if(compareString("SONG", currentWord.TabWord)){
       ADVWORD();
@@ -176,7 +178,6 @@ void readCommand(int status){
       else if(compareString("REMOVE", currentWord.TabWord)){
         queueRemove();
       }
-      START();
     }
     else if(compareString("PLAYLIST", currentWord.TabWord)){
       ADVWORD();
@@ -216,7 +217,6 @@ void readCommand(int status){
       while(!endWord){
         ADVWORD();
       }
-      START();
     }
   }
 }
@@ -564,7 +564,6 @@ void playlistAddSong(){
   else{
     printf("Penyanyi %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser.TabWord);
   }
-  START();
 }
 
 void playlistAddAlbum(){
@@ -742,7 +741,6 @@ void statusCommand(){
     printf("Your queue is empty.\n");
   }
   printf("\n");
-  START();
 }
 
 void songPrev(){
@@ -853,8 +851,8 @@ boolean loadSave(char *filePath){
         }
 
         // Output Lagu dari file Save untuk testing
-        //tempLagu.Judul = tempJudul;
-        //tempLagu.Album = tempAlbum; 
+        tempLagu.Judul = tempJudul;
+        tempLagu.Album = tempAlbum; 
         //printf("Penyanyi : %s\n",tempLagu.Penyanyi.TabWord);
         //printf("Album : %s\n",tempLagu.Album.TabWord);
         //printf("Judul : %s\n", tempLagu.Judul.TabWord);
@@ -862,11 +860,7 @@ boolean loadSave(char *filePath){
         //AddSet(&SetDaftarAlbum, tempLagu.Album);
         //AddSet(&SetDaftarPenyanyi, tempLagu.Penyanyi);
         //printf("Panjang Set : %d\n", SetDaftarPenyanyi.Count);
-
-        //printf("Penyanyi : %s\n",SetDaftarLagu.buffer[idxLagu].Penyanyi.TabWord);
-        //printf("Album : %s\n",SetDaftarLagu.buffer[idxLagu].Album.TabWord);
-        //printf("Judul : %s\n", SetDaftarLagu.buffer[idxLagu].Judul.TabWord);
-        
+        //
         enqueue(&QueueLagu, tempLagu);
         idxLagu++;
         
@@ -990,15 +984,14 @@ boolean loadSave(char *filePath){
 }
 
 boolean defaultSave(){
-  START();
-  int idxP = currentChar - '0';
-  //printf("Jumlah Penyanyi : %c\n", currentChar);
   STARTWORD();
+  int idxP = WordToInt(currentWord);
+  //printf("Jumlah Penyanyi : %d\n", idxP);
   for(int k = 0; k < idxP; k++){
-    START(); // Reading num of albums
-    //printf("Jumlah Album : %c\n", currentChar);
-    int idxA = currentChar -'0';
-
+    STARTWORD();
+    int idxA = WordToInt(currentWord);
+    //printf("Jumlah Album : %d\n", idxA);
+    
     // Reading Penyanyi
     Word space;
     STARTWORD();
@@ -1015,10 +1008,10 @@ boolean defaultSave(){
     CreateSet(&newSet);
 
     for(int j = 0; j < idxA; j++){
-      START(); // Reading num of titles
-      //printf("Jumlah Judul : %c\n", currentChar);
-      int idxJ = currentChar - '0'; 
-
+      STARTWORD();
+      int idxJ = WordToInt(currentWord); 
+      //printf("Jumlah Judul : %d\n", idxJ);
+      
       // Membaca Album 
       STARTWORD();
       Word tempAlbum = currentWord;
@@ -1095,11 +1088,11 @@ void saveCommand(boolean Quit){
   Word filePath; 
   if(!Quit){
     ADVWORD();
-    SetWord(&filePath, "../../../save/");
+    SetWord(&filePath, "../save/");
     ConcatWord(currentWord,&filePath);
   }
   else{
-    SetWord(&filePath, "../../../save/defSave.txt");
+    SetWord(&filePath, "../save/defSave.txt");
   }
   printf("%s\n",filePath.TabWord);
   FILE *file = fopen(filePath.TabWord, "w");
@@ -1189,8 +1182,6 @@ void saveCommand(boolean Quit){
 
   fclose(file);
   printf("File berhasl disimpan\n"); 
-  START();
-
 }
 
 void listCommand(){
@@ -1202,8 +1193,8 @@ void listCommand(){
       printf("%d. %s\n",i+1, SetDaftarPenyanyi.buffer[i].TabWord);
     }
     
-    printf("Ingin melihat album yang ada? (Y/N) : ");
     STARTWORD();//Reading Empty Spaces
+    printf("Ingin melihat album yang ada? (Y/N) : ");
     STARTWORD();
     
     if(compareString(currentWord.TabWord, "Y")){
