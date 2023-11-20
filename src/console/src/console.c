@@ -73,7 +73,7 @@ void readCommand(int status){
       }
       char path[120] = "../save/";
       for(int i =0; i< currentWord.Length; i++){
-        path[i + 14] = currentWord.TabWord[i]; 
+        path[i + 8] = currentWord.TabWord[i]; 
       }
       boolean success = loadSave(path);
       if (success){
