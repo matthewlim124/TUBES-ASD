@@ -123,7 +123,7 @@ void readCommand(int status){
       }
     }
     else if(!userLogin && userId == 0){
-      printf("Silahkan Login atau Register terlebih dahulu.\n");
+      printf("Silahkan \e[1;32mLOGIN\e[m atau \e[1;32mREGISTER\e[m terlebih dahulu.\n");
       while(!endWord){
         ADVWORD();
       }
