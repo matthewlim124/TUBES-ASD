@@ -16,10 +16,12 @@ Playlist arrOfPlaylist[MaxUser];
 Queue arrOfQueue[MaxUser];
 Lagu arrOfLagu[MaxUser];
 
+int statusRun = 0; 
 int idxLagu = 0;
 int userId = 0; 
 boolean statusLoad, userLogin = false; 
-void readCommand(){
+void readCommand(int status){
+  statusRun = status;
   // Construct Set 
   CreateSet(&SetDaftarAlbum);
   CreateSet(&SetDaftarPenyanyi);
@@ -51,7 +53,7 @@ void readCommand(){
         printf("Sesi sudah berjalan \n");
         continue;
       }
-      char path[120] = "../../../save/defSave.txt";
+      char path[120] = "../save/defSave.txt";
       boolean success = loadSave(path);
       if(success){
         printf("START berhasil dijalankan\n");
@@ -69,7 +71,7 @@ void readCommand(){
         printf("Sesi sudah berjalan \n");
         continue;
       }
-      char path[120] = "../../../save/";
+      char path[120] = "../save/";
       for(int i =0; i< currentWord.Length; i++){
         path[i + 14] = currentWord.TabWord[i]; 
       }
@@ -107,7 +109,7 @@ void readCommand(){
           }
         }
         else{
-          printf("Tidak ada user dengan %s\nPlease Register or Login\n",currentWord.TabWord);
+          printf("Tidak ada user dengan username \e[1;31m%s\e[m\nPlease Register or Login\n",currentWord.TabWord);
       
         }
       }
@@ -244,7 +246,6 @@ void registerCommand(){
     arrOfStack[userId] = StackLagu;
     arrOfQueue[userId] = QueueLagu;
   }
-  START();
 }
 
 void LoginCommand(){
@@ -777,11 +778,17 @@ void songNext(){
 boolean loadSave(char *filePath){
   printf("Lokasi File : %s\n",filePath);
   FILE *file = freopen(filePath, "r",stdin);
-
+  Word terminal;
+  if(statusRun == 1){
+    SetWord(&terminal, "/dev/tty");
+  }
+  else if(statusRun == 2){
+    SetWord(&terminal, "CONIN$");
+  }
   // If save file not exists
   if (file == NULL) {
     printf("file can't be opened \n");
-    freopen("CONIN$", "r", stdin);
+    freopen(terminal.TabWord, "r", stdin);
     return false; 
   }
   
@@ -978,7 +985,7 @@ boolean loadSave(char *filePath){
       //}
     }
   }
-  freopen("CONIN$", "r", stdin);
+  freopen(terminal.TabWord, "r", stdin);
   return true; 
 }
 
