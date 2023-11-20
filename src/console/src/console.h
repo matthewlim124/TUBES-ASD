@@ -40,4 +40,6 @@ Word takeInput();
 void songNext();
 void songPrev();
 void listCommand();
+void helpCommand();
+
 #endif

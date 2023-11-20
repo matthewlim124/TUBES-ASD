@@ -88,8 +88,33 @@ void readCommand(int status){
       }
       else printf("File konfigurasi aplikasi gagal dibaca.\n");
     }
+
+    else if(compareString("HELP", currentWord.TabWord)){
+      if(!masukSesi){
+        printf("=====[ Menu Help WayangWave ]=====\n");
+        printf("1. START -> Untuk masuk sesi baru\n");
+        printf("2. LOAD -> Untuk memulai sesi berdasarkan file konfigurasi\n");
+      } else {
+        printf("=====[ Menu Help WayangWave ]=====\n");
+        printf("1. LIST -> Untuk menampilkan daftar lagu, playlist, album, dan lagu\n");
+        printf("2. PLAY -> Untuk memulai suatu lagu\n");
+        printf("3. QUEUE -> Untuk mengatur antrian lagu\n");
+        printf("4. SONG -> Untuk mengatur lagu yang sedang diputar\n");
+        printf("5. PLAYLIST -> Untuk mengatur playlist\n");
+        printf("6. STATUS -> Untuk menampilkan status lagu yang sedang diputar dan antrian lagu\n");
+        printf("7. HELP -> Untuk menampilkan menu help\n");
+        printf("8. SAVE -> Untuk menyimpan state ke dalam file\n");
+        printf("9. QUIT -> Untuk keluar dari sesi\n");
+      }
+    }
+
     else if(!masukSesi){
+<<<<<<< HEAD
       printf("Silahkan jalankan perintah \e[1;32mSTART;\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
+=======
+      printf("Silahkan jalankan perintah \e[1;32mSTART\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
+      START();
+>>>>>>> 441e16ee1f5920ae55fbe8179dab8e581ec80f90
     }
 
     else if(compareString("LOGIN", currentWord.TabWord)){
@@ -213,7 +238,7 @@ void readCommand(int status){
       }
     }
     else{
-      printf("Perintah tidak valid silahkan jalankan \e[1;32mHelp;\e[m untuk melihat daftar perintah\n");
+      printf("Perintah tidak valid silahkan jalankan \e[1;32mHELP\e[m untuk melihat daftar perintah\n");
       while(!endWord){
         ADVWORD();
       }
