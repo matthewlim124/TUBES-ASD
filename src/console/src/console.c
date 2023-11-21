@@ -109,7 +109,6 @@ void readCommand(int status){
     }
 
     else if(!masukSesi){
-      printf("Silahkan jalankan perintah \e[1;32mSTART;\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
       printf("Silahkan jalankan perintah \e[1;32mSTART\e[m atau \e[1;32mLOAD nama_save.txt;\e[m \n");
     }
 
@@ -135,8 +134,7 @@ void readCommand(int status){
           }
         }
         else{
-          printf("Tidak ada user dengan username \e[1;31m%s\e[m\nPlease Register or Login\n",currentWord.TabWord);
-      
+          printf("Tidak ada user dengan username \e[1;31m%s\e[m\nPlease \e[1;32mRegister\e[m or \e[1;32mLogin\e[m\n", currentWord.TabWord);
         }
       }
     }
@@ -293,7 +291,7 @@ void playPlaylist(){
   int Index = WordToInt(currentWord) -1;
   Word Key = MapPlaylist.Elements[Index].Key;
   if(Key.Length == 0){
-    printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.\n", Index+1);
+    printf("Tidak ada playlist dengan ID \e[1;31m%d\e[m dalam daftar playlist pengguna. Silakan coba lagi.\n", Index + 1);
   }
   else{
     printf("Memutar playlist \"\e[1;32m%s\e[m\".\n",Key.TabWord);
@@ -385,11 +383,12 @@ void playSong(){
       historyClear();
     }
     else {  
-      printf("Album %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser2.TabWord);
+      printf("Album \e[1;31m%s\e[m tidak ada dalam daftar. Silakan coba lagi.\n", inputUser2.TabWord);
+
     }
   }
   else {
-    printf("Penyanyi %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser.TabWord);
+    printf("Penyanyi \e[1;31m%s\e[m tidak ada dalam daftar. Silakan coba lagi.\n", inputUser.TabWord);
   }
 }
 
