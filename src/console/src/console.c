@@ -823,14 +823,24 @@ void statusCommand(){
 }
 
 void songPrev(){
-  Lagu tempLagu; 
+  Lagu tempLagu;
   if(!IsEmptyStack(StackLagu)){
     Pop(&StackLagu,&tempLagu);
     printf("Memutar lagu sebelumnya\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
+    if(!IsEmptyLagu(currentPlaying)){
+      for(int i = IDX_TAIL(QueueLagu);i >= 0;i--){
+        QueueLagu.buffer[i+1] = QueueLagu.buffer[i];
+      }
+      IDX_TAIL(QueueLagu)++;
+    }
+    QueueLagu.buffer[0] = currentPlaying;
     currentPlaying = tempLagu;
   }
   else{
-    if(!IsEmptyLagu(currentPlaying))printf("Riwayat lagu kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",currentPlaying.Judul.TabWord, currentPlaying.Penyanyi.TabWord);
+    tempLagu = currentPlaying;
+    if(!IsEmptyLagu(currentPlaying)){
+      printf("Riwayat lagu kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",currentPlaying.Judul.TabWord, currentPlaying.Penyanyi.TabWord);\
+    }
     else{
       printf("Riwayat lagu kosong, sedang tidak memutar lagu\nTidak memutar lagu apapun.\n");
     }
@@ -840,9 +850,9 @@ void songNext(){
   Lagu tempLagu; 
   dequeue(&QueueLagu,&tempLagu);
   if(!isEmpty(QueueLagu)){
+    Push(&StackLagu, currentPlaying);
     currentPlaying = tempLagu; 
     printf("Memutar lagu selanjutnya\n\"%s \" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
-    
   }
   else{
     tempLagu = currentPlaying; 
