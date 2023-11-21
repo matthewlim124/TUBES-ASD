@@ -40,6 +40,7 @@ Word takeInput();
 void songNext();
 void songPrev();
 void listCommand();
-void helpCommand();
+void printBanner();
+void delay(unsigned int milliseconds);
 
 #endif
