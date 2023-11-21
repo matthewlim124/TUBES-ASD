@@ -277,6 +277,11 @@ void LoginCommand(){
 
 }
 void playPlaylist(){
+  if(MapPlaylist.Count == 0){
+    printf("Tidak ada Playlist yang terdaftar\n");
+    return;
+  }
+
   printf("Daftar Playlist : \n");
   for(int i =0; i<MapPlaylist.Count; i++){
     printf("%d. %s\n",i+1, MapPlaylist.Elements[i].Key.TabWord);
@@ -396,7 +401,7 @@ void queueRemove(){
   ADVWORD();
   int IndexTarget = WordToInt(currentWord);
   if(IndexTarget > QueueLagu.idxTail || IndexTarget < QueueLagu.idxHead){
-    printf("Lagu dengan urutan ke %d tidak ada.\n", IndexTarget);
+    printf("Lagu dengan urutan ke %d tidak terdapat dalam queue.\n", IndexTarget);
   }
   else{
     Queue newQueue; 
@@ -462,6 +467,9 @@ void queueSwap(){
   printf("Lagu \e[1;32m%s\e[m berhasil ditukar dengan \e[1;32m%s\e[m.\n\n",awal.Judul.TabWord, akhir.Judul.TabWord);
 }
 void queuePlaylist(){
+  if(MapPlaylist.Count == 0){
+    printf("Tidak ada playlist yang terdaftar\n");
+  }
   printf("Daftar Playlist : \n");
   for(int i =0; i<MapPlaylist.Count; i++){
     printf("%d. %s\n",i+1,MapPlaylist.Elements[i].Key.TabWord);
@@ -557,6 +565,9 @@ void playlistCreate(){
 
 
 void playlistAddSong(){
+  if(MapPlaylist.Count == 0){
+    printf("Tidak ada Playlist yang terdaftar\n");
+  }
   printf("Daftar Penyanyi : \n");
   for(int i =0; i< SetDaftarPenyanyi.Count; i++){
     printf("%d. %s\n", i+1, SetDaftarPenyanyi.buffer[i].TabWord);
@@ -626,6 +637,10 @@ void playlistAddSong(){
 }
 
 void playlistAddAlbum(){
+ if(MapPlaylist.Count == 0){
+    printf("Tidak ada Playlist yang terdaftar\n");
+  }
+
   printf("Daftar Penyanyi : \n");
   for(int i =0; i< SetDaftarPenyanyi.Count; i++){
     printf("%d. %s\n", i+1, SetDaftarPenyanyi.buffer[i].TabWord);
@@ -700,6 +715,7 @@ void playlistSwap(){
   ADVWORD();
   int idx2 = WordToInt(currentWord) - 1;
 
+
   if(MapPlaylist.Elements[playlist_idx].Key.Length == 0){
     printf("Tidak ada playlist dengan playlist ID %d\n", playlist_idx + 1);
   }else{
@@ -760,6 +776,10 @@ void playlistRemove(){
 }
 
 void playlistDelete(){
+ if(MapPlaylist.Count == 0){
+    printf("Tidak ada Playlist yang terdaftar\n");
+  }
+
   printf("Daftar Playlist Pengguna :\n");
       
   for(int j =0; j<MapPlaylist.Count; j++){
