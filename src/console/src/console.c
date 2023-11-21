@@ -838,14 +838,13 @@ void songPrev(){
 }
 void songNext(){
   Lagu tempLagu; 
-  dequeue(&QueueLagu,&tempLagu);
   if(!isEmpty(QueueLagu)){
+    dequeue(&QueueLagu,&tempLagu);
     currentPlaying = tempLagu; 
     printf("Memutar lagu selanjutnya\n\"%s \" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
     
   }
   else{
-    enqueue(&QueueLagu, tempLagu);
     if(!IsEmptyLagu(currentPlaying))printf("Queue kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
   }
 
