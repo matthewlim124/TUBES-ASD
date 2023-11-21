@@ -10,6 +10,10 @@
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+
 #define MaxUser 102
 void updateSaveUser();
 void cleanUser();
