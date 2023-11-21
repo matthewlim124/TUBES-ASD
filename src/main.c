@@ -5,6 +5,8 @@
 int main(){
   boolean sEnd = false, A = false; 
   int stat =0; 
+
+  printBanner();
   while(!stat){
     printf("Pilih dimana program dijalankan : \n    1.Linux\n    2.Windows\n >> "); 
     STARTWORD();
