@@ -467,15 +467,20 @@ void queuePlaylist(){
   START(); //Reading \n
   printf("Masukkan ID Playlist : ");
   STARTWORD();
-  int Index = WordToInt(currentWord) -1;
-  Word Key = MapPlaylist.Elements[Index].Key;
-  LinkedList L = ValuePlaylist(MapPlaylist, Key);
-  addressLinkedList P = First(L);
-  while(P != Nil_LL){
-    enqueue(&QueueLagu, Info(P));
-    P = P->next;
+  if (WordToInt(currentWord) > MapPlaylist.Count || WordToInt(currentWord) < 1){
+    printf("Tidak ada playlist dengan ID \e[1;31m%d\e[m dalam daftar playlist pengguna. Silakan coba lagi.\n", WordToInt(currentWord));
+    return;
+  } else {
+    int Index = WordToInt(currentWord) -1;
+    Word Key = MapPlaylist.Elements[Index].Key;
+    LinkedList L = ValuePlaylist(MapPlaylist, Key);
+    addressLinkedList P = First(L);
+    while(P != Nil_LL){
+      enqueue(&QueueLagu, Info(P));
+      P = P->next;
+    }
+    printf("Berhasil menambahkan playlist \e[1;32m%s\e[m ke queue.\n\n",Key.TabWord);
   }
-  printf("Berhasil menambahkan playlist \e[1;32m%s\e[m ke queue.\n\n",Key.TabWord);
 }
 void historyClear(){
   CreateEmpty(&StackLagu);
