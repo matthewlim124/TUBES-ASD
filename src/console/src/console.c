@@ -845,8 +845,10 @@ void songNext(){
     
   }
   else{
-    enqueue(&QueueLagu, tempLagu);
-    if(!IsEmptyLagu(currentPlaying))printf("Queue kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
+    tempLagu = currentPlaying; 
+    if(!IsEmptyLagu(currentPlaying)){
+      printf("Queue kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
+    }
   }
 
   if(IsEmptyLagu(currentPlaying)) printf("Tidak ada lagu yang sedang diputar\nTidak memutar lagu apapun.\n");
