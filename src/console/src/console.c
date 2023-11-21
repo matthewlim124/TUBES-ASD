@@ -292,7 +292,28 @@ void playPlaylist(){
   printf("\n");
   int Index = WordToInt(currentWord) -1;
   Word Key = MapPlaylist.Elements[Index].Key;
-  printf("Memutar playlist \"\e[1;32m%s\e[m\".\n",Key.TabWord);
+  if(Key.Length == 0){
+    printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.\n", Index+1);
+  }
+  else{
+    printf("Memutar playlist \"\e[1;32m%s\e[m\".\n",Key.TabWord);
+    LinkedList PlaylistTerpilih = ValuePlaylist(MapPlaylist, Key);
+    addressLinkedList P = First(PlaylistTerpilih); 
+    if(P == Nil_LL){
+      currentPlaying = MakeLagu();
+    }
+    else{
+      currentPlaying = Info(P);
+      Push(&StackLagu, P->info);
+      P=Next(P);
+    }
+    while(P != Nil_LL){
+      enqueue(&QueueLagu, P->info);
+      Push(&StackLagu, P->info);
+      P= Next(P);
+    }
+  }
+  /* printf("Memutar playlist \"\e[1;32m%s\e[m\".\n",Key.TabWord);
   LinkedList PlaylistTerpilih = ValuePlaylist(MapPlaylist, Key);
   addressLinkedList P = First(PlaylistTerpilih); 
   if(P == Nil_LL){
@@ -307,7 +328,7 @@ void playPlaylist(){
     enqueue(&QueueLagu, P->info);
     Push(&StackLagu, P->info);
     P= Next(P);
-  }
+  } */
   
   //Stack temp; 
   //CreateEmpty(&temp);
@@ -363,7 +384,7 @@ void playSong(){
       queueClear();
       historyClear();
     }
-    else {
+    else {  
       printf("Album %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser2.TabWord);
     }
   }
