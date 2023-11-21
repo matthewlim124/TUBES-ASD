@@ -25,10 +25,10 @@ Pretty Visitors
 Do I Wanna Know?
 R U Mine?
 Arabella
-3
+2
 bandung bondowoso
 rorojonggrang_
-bandung roro
+wwww
 Arctic Monkeys;Favourite Worst Nightmare;505
 5
 BLACKPINK;BORN PINK;Typa Girl
@@ -53,7 +53,8 @@ Arctic Monkeys;Humbug;Pretty Visitors
 0
 0
 0
--
-0
+BLACKPINK;BORN PINK;Shut Down
+1
+BLACKPINK;BORN PINK;Shut Down
 0
 0
