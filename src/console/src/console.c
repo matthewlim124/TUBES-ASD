@@ -523,7 +523,12 @@ void queueSong(){
       enqueue(&QueueLagu, newLagu);
       printf("\nBerhasil menambahkan Lagu \"%s\" oleh \"%s\" ke queue.",tempJudul.buffer[indexLagu].TabWord,inputUser.TabWord);
     }
-
+    else {  
+      printf("Album \e[1;31m%s\e[m tidak ada dalam daftar. Silakan coba lagi.\n", inputUser2.TabWord);
+    }
+  }
+  else {
+    printf("Penyanyi \e[1;31m%s\e[m tidak ada dalam daftar. Silakan coba lagi.\n", inputUser.TabWord);
   }
   printf("\n");
 }
