@@ -405,10 +405,12 @@ void queueRemove(){
       Lagu temp; 
       int indexQ = QueueLagu.idxHead; 
       dequeue(&QueueLagu, &temp);
-      if(indexQ != (IndexTarget-1) )
+      if(indexQ != (IndexTarget-1)){
         enqueue(&newQueue,temp);
+      } else{
+        printf("Lagu \"%s\" oleh \"%s\" telah dihapus dari queue!\n", temp.Judul.TabWord, temp.Penyanyi.TabWord);
+      }
     }
-
     QueueLagu = newQueue;
   }
   printf("\n");
