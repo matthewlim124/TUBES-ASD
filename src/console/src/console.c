@@ -1,5 +1,6 @@
 #include "console.h"
 #include <stdio.h>
+#include <time.h>
 
 //Global Variable 
 Queue QueueLagu; 
@@ -377,20 +378,15 @@ void playSong(){
       START();//Reading \n
       STARTWORD();
       int indexLagu = WordToInt(currentWord) -1 ;
-      if(!IsIn(tempJudul, tempJudul.buffer[indexLagu])){
-        printf("Tidak ada lagu dengan ID %d pada album %s.\n", indexLagu + 1, inputUser2.TabWord);
-      }else{
-        Lagu newLagu; 
-        newLagu.Album = inputUser2; 
-        newLagu.Judul = tempJudul.buffer[indexLagu];
-        newLagu.Penyanyi = inputUser;
+      Lagu newLagu; 
+      newLagu.Album = inputUser2; 
+      newLagu.Judul = tempJudul.buffer[indexLagu];
+      newLagu.Penyanyi = inputUser;
 
-        currentPlaying = newLagu; 
-        printf("Memutar lagu \"%s\" oleh \"%s\".\n",currentPlaying.Judul.TabWord, currentPlaying.Penyanyi.TabWord);
-        queueClear();
-        historyClear();
-      }
-      
+      currentPlaying = newLagu; 
+      printf("Memutar lagu \"%s\" oleh \"%s\".\n",currentPlaying.Judul.TabWord, currentPlaying.Penyanyi.TabWord);
+      queueClear();
+      historyClear();
     }
     else {  
       printf("Album \e[1;31m%s\e[m tidak ada dalam daftar. Silakan coba lagi.\n", inputUser2.TabWord);
@@ -536,17 +532,12 @@ void queueSong(){
       START();//Reading \n
       STARTWORD();
       int indexLagu = WordToInt(currentWord) -1 ;
-      if(!IsIn(tempJudul, tempJudul.buffer[indexLagu])){
-        printf("Tidak ada lagu dengan ID %d pada album %s.\n", indexLagu + 1, inputUser2.TabWord);
-      }else{
-        Lagu newLagu; 
-        newLagu.Album = inputUser2; 
-        newLagu.Judul = tempJudul.buffer[indexLagu];
-        newLagu.Penyanyi = inputUser;
-        enqueue(&QueueLagu, newLagu);
-        printf("\nBerhasil menambahkan Lagu \"%s\" oleh \"%s\" ke queue.",tempJudul.buffer[indexLagu].TabWord,inputUser.TabWord);
-      }
-      
+      Lagu newLagu; 
+      newLagu.Album = inputUser2; 
+      newLagu.Judul = tempJudul.buffer[indexLagu];
+      newLagu.Penyanyi = inputUser;
+      enqueue(&QueueLagu, newLagu);
+      printf("\nBerhasil menambahkan Lagu \"%s\" oleh \"%s\" ke queue.",tempJudul.buffer[indexLagu].TabWord,inputUser.TabWord);
     }
     else {  
       printf("Album \e[1;31m%s\e[m tidak ada dalam daftar. Silakan coba lagi.\n", inputUser2.TabWord);
@@ -610,37 +601,32 @@ void playlistAddSong(){
       START();
       STARTWORD();
       int indexLagu = WordToInt(currentWord) -1 ;
-      if(!IsIn(tempJudul, tempJudul.buffer[indexLagu])){
-        printf("Tidak ada lagu dengan ID %d pada album %s.\n", indexLagu + 1, inputUser2.TabWord);
-      }else{
-        Lagu newLagu; 
-        newLagu.Album = inputUser2; 
-        newLagu.Judul = tempJudul.buffer[indexLagu];
-        newLagu.Penyanyi = inputUser;
-        printf("\nDaftar Playlist Pengguna :\n");
-        for(int j =0; j<MapPlaylist.Count; j++){
-          printf("%d. %s\n",j+1, MapPlaylist.Elements[j].Key.TabWord);
-        }
-
-        printf("Masukkan ID Playlist : ");
-        START();
-        STARTWORD();
-        printf("\n");
-        int Index = WordToInt(currentWord) -1;
-        if(MapPlaylist.Elements[Index].Key.Length == 0){
-          printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.", Index);
-        }else{
-          if(Search(MapPlaylist.Elements[Index].Value, newLagu) == Nil_LL){
-            InsVLast(&MapPlaylist.Elements[Index].Value, newLagu);
-            printf("Lagu dengan judul \"%s\" pada album %s oleh penyanyi %s berhasil ditambahkan ke dalam playlist %s.\n",tempJudul.buffer[indexLagu].TabWord,inputUser2.TabWord, inputUser.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
-          }else{
-            printf("\nLagu dengan judul \"%s\" pada album %s oleh penyanyi %s sudah terdapat di dalam playlist %s.\n",tempJudul.buffer[indexLagu].TabWord,inputUser2.TabWord, inputUser.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
-          }
-        
-        } 
+      Lagu newLagu; 
+      newLagu.Album = inputUser2; 
+      newLagu.Judul = tempJudul.buffer[indexLagu];
+      newLagu.Penyanyi = inputUser;
+      
+      printf("\nDaftar Playlist Pengguna :\n");
+      for(int j =0; j<MapPlaylist.Count; j++){
+        printf("%d. %s\n",j+1, MapPlaylist.Elements[j].Key.TabWord);
       }
+
+      printf("Masukkan ID Playlist : ");
+      START();
+      STARTWORD();
+      printf("\n");
+      int Index = WordToInt(currentWord) -1;
+      if(MapPlaylist.Elements[Index].Key.Length == 0){
+        printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.", Index);
+      }else{
+        if(Search(MapPlaylist.Elements[Index].Value, newLagu) == Nil_LL){
+          InsVLast(&MapPlaylist.Elements[Index].Value, newLagu);
+          printf("Lagu dengan judul \"%s\" pada album %s oleh penyanyi %s berhasil ditambahkan ke dalam playlist %s.\n",tempJudul.buffer[indexLagu].TabWord,inputUser2.TabWord, inputUser.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
+        }else{
+          printf("\nLagu dengan judul \"%s\" pada album %s oleh penyanyi %s sudah terdapat di dalam playlist %s.\n",tempJudul.buffer[indexLagu].TabWord,inputUser2.TabWord, inputUser.TabWord, MapPlaylist.Elements[Index].Key.TabWord);
+        }
       
-      
+      } 
     }
     else{
       printf("Album %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser2.TabWord);
@@ -854,7 +840,7 @@ void songPrev(){
   else{
     tempLagu = currentPlaying;
     if(!IsEmptyLagu(currentPlaying)){
-      printf("Riwayat lagu kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",currentPlaying.Judul.TabWord, currentPlaying.Penyanyi.TabWord);
+      printf("Riwayat lagu kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",currentPlaying.Judul.TabWord, currentPlaying.Penyanyi.TabWord);\
     }
     else{
       printf("Riwayat lagu kosong, sedang tidak memutar lagu\nTidak memutar lagu apapun.\n");
@@ -863,9 +849,8 @@ void songPrev(){
 }
 void songNext(){
   Lagu tempLagu; 
-  
+  dequeue(&QueueLagu,&tempLagu);
   if(!isEmpty(QueueLagu)){
-    dequeue(&QueueLagu,&tempLagu);
     Push(&StackLagu, currentPlaying);
     currentPlaying = tempLagu; 
     printf("Memutar lagu selanjutnya\n\"%s \" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
@@ -1226,7 +1211,7 @@ void saveCommand(boolean Quit){
     }
   }
   //Bagian Daftar User 
-  fprintf(file, "%d\n",SetDaftarUser.Count);
+  fprintf(file, "%d\n",numOfSinger);
   for(int ac = 0; ac<SetDaftarUser.Count; ac++){
     fprintf(file, "%s\n",SetDaftarUser.buffer[ac].TabWord);
   }
@@ -1413,3 +1398,34 @@ boolean compareString(char *a, char *b){
   return true; 
 }
 
+void printBanner(){
+  printf("//////////////////////////////////////////////////////////////////////\n");
+  delay(50);
+  printf("//__        __   _                            _                     //\n");
+  delay(50);
+  printf("//\\ \\      / /__| | ___ ___  _ __ ___   ___  | |_ ___               //\n");
+  delay(50);
+  printf("// \\ \\ /\\ / / _ \\ |/ __/ _ \\| '_ ` _ \\ / _ \\ | __/ _ \\              //\n");
+  delay(50);
+  printf("//  \\ V  V /  __/ | (_| (_) | | | | | |  __/ | || (_) |             //\n");
+  delay(50);
+  printf("//__ \\_/\\_/ \\___|_|\\___\\___/|_| |_| |_|\\___|  \\__\\___/            _ //\n");
+  delay(50);
+  printf("//\\ \\      / /_ _ _   _  __ _ _ __   __ \\ \\      / /_ ___   _____| |//\n");
+  delay(50);
+  printf("// \\ \\ /\\ / / _` | | | |/ _` | '_ \\ / _` \\ \\ /\\ / / _` \\ \\ / / _ \\ |//\n");
+  delay(50);
+  printf("//  \\ V  V / (_| | |_| | (_| | | | | (_| |\\ V  V / (_| |\\ V /  __/_|//\n");
+  delay(50);
+  printf("//   \\_/\\_/ \\__,_|\\__, |\\__,_|_| |_|\\__, | \\_/\\_/ \\__,_| \\_/ \\___(_)//\n");
+  delay(50);
+  printf("//                |___/             |___/                           //\n");
+  delay(50);
+  printf("//////////////////////////////////////////////////////////////////////\n");
+  delay(50);
+}
+
+void delay(unsigned int milliseconds) {
+    clock_t start_time = clock();
+    while (clock() < start_time + milliseconds * CLOCKS_PER_SEC / 1000);
+}
