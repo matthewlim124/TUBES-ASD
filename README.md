@@ -1,19 +1,19 @@
 # Tugas Besar - Algoritma dan Struktur Data STI
 Membuat "WayangWave"
 
-# Anggota K01-Kelompok 10
-1.Zafran Divac Azzahra (18220079)
-2.Matthew Lim	(18222005)
-3.Aththariq Lisan Q. D. S.(18222013)
-4.Christopher Richard Chandra	(18222057)
-5.Winata Tristan (18222061)
+## Anggota K01-Kelompok 10
+1. Zafran Divac Azzahra (18220079) <br />
+2. Matthew Lim	(18222005) <br />
+3. Aththariq Lisan Q. D. S.(18222013) <br />
+4. Christopher Richard Chandra	(18222057) <br />
+5. Winata Tristan (18222061) <br />
 
 
-# Deskripsi Program
-WayangWave adalah sebuah aplikasi yang mensimulasikan servis pemutaran lagu. 
-Di WayangWave terdapat fitur-fitur atau perintah-perintah yang dapat dijalankan oleh pengguna.
+## Deskripsi Program
+WayangWave adalah sebuah aplikasi yang mensimulasikan servis pemutaran lagu. <br />
+Di WayangWave terdapat fitur-fitur atau perintah-perintah yang dapat dijalankan oleh pengguna. <br />
 Secara garis besar, pengguna dapat menjalankan perintah untuk  memutar lagu, membuat dan mengisi playlist, menambah urutan lagu yang akan diputar, 
-menyimpan data "state" (lagu yang sedang diputar, urutan lagu saat itu, playlist pengguna) atau dalam kata lain save, dan juga membaca data hasil save pengguna.
+menyimpan data "state" (lagu yang sedang diputar, urutan lagu saat itu, playlist pengguna) atau dalam kata lain save, dan juga membaca data hasil save pengguna. <br />
 
 ## Features
 
