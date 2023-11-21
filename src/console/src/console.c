@@ -1,6 +1,6 @@
 #include "console.h"
 #include <stdio.h>
-
+#include <time.h>
 //Global Variable 
 Queue QueueLagu; 
 SetOfWord SetDaftarAlbum, SetDaftarPenyanyi, SetDaftarUser;
@@ -1413,3 +1413,34 @@ boolean compareString(char *a, char *b){
   return true; 
 }
 
+void printBanner(){
+  printf("//////////////////////////////////////////////////////////////////////\n");
+  delay(50);
+  printf("//__        __   _                            _                     //\n");
+  delay(50);
+  printf("//\\ \\      / /__| | ___ ___  _ __ ___   ___  | |_ ___               //\n");
+  delay(50);
+  printf("// \\ \\ /\\ / / _ \\ |/ __/ _ \\| '_ ` _ \\ / _ \\ | __/ _ \\              //\n");
+  delay(50);
+  printf("//  \\ V  V /  __/ | (_| (_) | | | | | |  __/ | || (_) |             //\n");
+  delay(50);
+  printf("//__ \\_/\\_/ \\___|_|\\___\\___/|_| |_| |_|\\___|  \\__\\___/            _ //\n");
+  delay(50);
+  printf("//\\ \\      / /_ _ _   _  __ _ _ __   __ \\ \\      / /_ ___   _____| |//\n");
+  delay(50);
+  printf("// \\ \\ /\\ / / _` | | | |/ _` | '_ \\ / _` \\ \\ /\\ / / _` \\ \\ / / _ \\ |//\n");
+  delay(50);
+  printf("//  \\ V  V / (_| | |_| | (_| | | | | (_| |\\ V  V / (_| |\\ V /  __/_|//\n");
+  delay(50);
+  printf("//   \\_/\\_/ \\__,_|\\__, |\\__,_|_| |_|\\__, | \\_/\\_/ \\__,_| \\_/ \\___(_)//\n");
+  delay(50);
+  printf("//                |___/             |___/                           //\n");
+  delay(50);
+  printf("//////////////////////////////////////////////////////////////////////\n");
+  delay(50);
+}
+
+void delay(unsigned int milliseconds) {
+    clock_t start_time = clock();
+    while (clock() < start_time + milliseconds * CLOCKS_PER_SEC / 1000);
+}
