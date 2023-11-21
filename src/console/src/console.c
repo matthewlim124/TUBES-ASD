@@ -363,6 +363,9 @@ void playSong(){
       queueClear();
       historyClear();
     }
+    else {
+      printf("Album %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser2.TabWord);
+    }
   }
   else {
     printf("Penyanyi %s tidak ada dalam daftar. Silakan coba lagi.\n",inputUser.TabWord);
