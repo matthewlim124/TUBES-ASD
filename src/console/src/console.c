@@ -790,10 +790,10 @@ void playlistDelete(){
   START();// Reading \n
   STARTWORD();
   printf("\n");
-  int Index = WordToInt(currentWord) -1;
+  int Index = WordToInt(currentWord) -  1;
   
   if(MapPlaylist.Elements[Index].Key.Length == 0){
-    printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.", Index);
+    printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.", Index+1);
   }else{
     printf("Playlist ID %d dengan judul \e[1;32m%s\e[m berhasil dihapus.", Index+1, MapPlaylist.Elements[Index].Key.TabWord);
     DeletePlaylist(&MapPlaylist, MapPlaylist.Elements[Index].Key);
