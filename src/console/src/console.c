@@ -1272,7 +1272,7 @@ void saveCommand(boolean Quit){
   }
 
   fclose(file);
-  printf("File berhasl disimpan\n"); 
+  printf("\e[1;32mFile berhasil disimpan\e[m\n");
 }
 
 void listCommand(){
@@ -1368,7 +1368,7 @@ void quitCommand(int *stopStatus){
     printf("Selesai SAVE\n\n");
   }
   *stopStatus= 1;   
-  printf("Kamu keluar dari WayangWave.\nDadah ^_^/");
+  printf("Kamu keluar dari WayangWave.\nDadah ^_^/\n");
   }
 
 
