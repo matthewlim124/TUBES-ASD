@@ -7,12 +7,13 @@ Stack StackLagu;
 Lagu currentPlaying; 
 Map MapAlbum, MapLagu; 
 Playlist MapPlaylist;
-
+int userHist[100];
 // For User
 Stack arrOfStack[MaxUser];
 Playlist arrOfPlaylist[MaxUser];
 Queue arrOfQueue[MaxUser];
 Lagu arrOfLagu[MaxUser];
+LogisticRegressionModel model;
 
 Word path;
 int statusRun = 0; 
@@ -42,6 +43,10 @@ void readCommand(int status){
   
   // Construct MapPlaylist
   CreateEmptyPlaylist(&MapPlaylist);
+
+  for(int i =0; i< 100; i++){
+    userHist[i] = 0; 
+  }
   
   boolean masukSesi = false; 
   int stopStatus =0;
@@ -227,6 +232,25 @@ void readCommand(int status){
         playlistRemove();
       }
     }
+    else if(compareString("ENHANCE", currentWord.TabWord)){
+      ADVWORD();
+      if(compareString("HISTORY", currentWord.TabWord)){
+        PrepModelHistory();
+        giveRecommend();
+      }
+      else if(compareString("PLAYLIST", currentWord.TabWord)){
+        START();
+        printf("Masukkan nama Playlist : "); 
+        Word userInput = takeInput();
+        if(IsMemberPlaylist(MapPlaylist, userInput)){
+          PrepModelPlaylist(userInput);
+          giveRecommend();
+        }
+        else{
+          printf("Playlist dengan nama %s tidak ada \n",userInput.TabWord);
+        }
+      }
+    }
     else if(compareString("PLAY", currentWord.TabWord)){
       ADVWORD();
       if(compareString(currentWord.TabWord, "SONG")){
@@ -241,6 +265,79 @@ void readCommand(int status){
       while(!endWord){
         ADVWORD();
       }
+    }
+  }
+}
+
+void PrepModelPlaylist(Word Key){
+  //Rewrite daftarlagu with features 
+  LinkedList test = ValuePlaylist(MapPlaylist, Key);
+
+  DataPoint data[Length(DaftarLagu)];
+  for(int i = 0; i< Length(DaftarLagu); i++){
+    for(int j = 0 ; j< MAX_FEATURES; j++){
+      data[i].features[j] =  DaftarLagu.A[i].Features[j];
+    }
+  }
+
+  for(int i = 0; i< Length(DaftarLagu); i++){
+    addressLinkedList p = test.First; 
+    while(p != Nil_LL){
+      if(CompareLagu(p->info, DaftarLagu.A[i])){
+        data[i].label = 1;
+        p = p->next;
+        break;
+      }
+    }
+  }
+
+  initializeModel(&model, MAX_FEATURES);
+  trainModel(data, Length(DaftarLagu), MAX_FEATURES, &model);
+}
+
+void PrepModelHistory(){
+  DataPoint data[Length(DaftarLagu)];
+  for(int i =0; i < Length(DaftarLagu); i++){
+    for(int j = 0; j < MAX_FEATURES; j++){
+      data[i].features[j] = DaftarLagu.A[i].Features[j];
+      data[i].label = userHist[i]; 
+    }
+  }
+  
+  // Initialize Model
+  initializeModel(&model, MAX_FEATURES);
+  trainModel(data, Length(DaftarLagu), MAX_FEATURES, &model);
+}
+
+void giveRecommend(){
+  double arrRes[Length(DaftarLagu)];
+  for(int i =0; i<Length(DaftarLagu); i++){
+    if(!CompareLagu(DaftarLagu.A[i], currentPlaying) && userHist[i] != 1){
+      arrRes[i] = predictModel(DaftarLagu.A[i].Features, model, MAX_FEATURES);
+    }
+    else{
+      arrRes[i] =0;
+    }
+  }
+  int maxIndex =0; 
+  for(int i =0; i < Length(DaftarLagu); i++){
+    if(arrRes[i] > arrRes[maxIndex]) maxIndex = i; 
+  }
+  //for(int i =0; i< Length(DaftarLagu); i++){
+  //  printf("Index %d : %d\n", i,  userHist[i]);
+  //}
+  printf("Lagu Rekomen : %s, %.3f \n", DaftarLagu.A[maxIndex].Judul.TabWord, arrRes[maxIndex]);
+  //for(int i =0; i<MAX_FEATURES; i++){
+  //  printf("%.2f \n", DaftarLagu.A[maxIndex].Features[i]);
+  //}
+}
+
+// Berguna untuk mencatat lagu yang pernah didengar oleh User
+void reUserHist(Lagu target){
+  for(int i = 0; i < Length(DaftarLagu); i++){
+    if(CompareLagu(DaftarLagu.A[i], target) && userHist[i] != 1){
+      userHist[i] = 1;
+      printf("Song : %s \n", target.Judul.TabWord);
     }
   }
 }
@@ -921,6 +1018,8 @@ boolean loadSave(char *filePath){
 
         inputCurrent = takeInput();
         currentPlaying.Judul = inputCurrent;
+
+        reUserHist(currentPlaying);
       }
       else{
         currentPlaying = MakeLagu();
@@ -997,9 +1096,12 @@ boolean loadSave(char *filePath){
         newLagu.Penyanyi = Penyanyi; 
         newLagu.Judul = Judul; 
         Push(&StackLagu, newLagu);
-        Lagu testLagu; 
-        Pop(&StackLagu, &testLagu);
-        Push(&StackLagu, newLagu);
+        //Lagu testLagu; 
+        //Pop(&StackLagu, &testLagu);
+        //Push(&StackLagu, newLagu);
+        
+        reUserHist(newLagu);
+        Lagu testLagu = newLagu;
         //printf("Penyanyi : %s\nAlbum : %s\nJudul : %s\n\n", testLagu.Penyanyi.TabWord, testLagu.Album.TabWord, testLagu.Judul.TabWord);
       }
       arrOfStack[abcd + 1] = StackLagu; 
@@ -1154,6 +1256,14 @@ boolean defaultSave(){
         }
 
         AddSet(&setJudul, tempJudul);
+        Lagu tempLagu = MakeLagu();
+        tempLagu.Judul = tempJudul; 
+        tempLagu.Album = tempAlbum; 
+        tempLagu.Penyanyi = tempPenyanyi; 
+        for(int i = 0; i < NUM_FEATURES; i++){
+          tempLagu.Features[i] = rand() % 10+1; 
+        }
+        Set(&DaftarLagu, Length(DaftarLagu), tempLagu);
         
         //printf("Judul : %s\n", tempJudul.TabWord);  
       }

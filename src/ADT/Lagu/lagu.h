@@ -3,10 +3,12 @@
 
 #include "../Word/word.h"
 
+#define NUM_FEATURES 10
 typedef struct{
   Word Penyanyi;
   Word Album;
   Word Judul;
+  double Features[NUM_FEATURES];
 }Lagu;
 
 // Constructor 

@@ -9,12 +9,18 @@
 #include "../../ADT/StackLagu/stack.h"
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
+#include "../../recSys.h"
 
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 
 #define MaxUser 102
+
+void PrepModelPlaylist(Word Key);
+void PrepModelHistory();
+void giveRecommend(); 
 void updateSaveUser();
 void cleanUser();
 void registerCommand();
