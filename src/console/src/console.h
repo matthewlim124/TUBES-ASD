@@ -18,6 +18,7 @@
 
 #define MaxUser 102
 
+void UpdateHistory();
 void PrepModelPlaylist(Word Key);
 void PrepModelHistory();
 void giveRecommend(); 

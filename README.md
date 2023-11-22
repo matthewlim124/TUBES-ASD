@@ -16,4 +16,7 @@ Membuat WayangWave
 ![100%](https://progress-bar.dev/100?title=Save)
 ![100%](https://progress-bar.dev/100?title=MultiUser)
 
-![60%](https://progress-bar.dev/60?title=Enhance)
+![100%](https://progress-bar.dev/100?title=Enhance)
+
+## Status
+Bug Checking in Progress... 

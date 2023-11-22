@@ -1,4 +1,5 @@
 #include "console.h"
+#include <stdlib.h>
 //Global Variable 
 Queue QueueLagu; 
 SetOfWord SetDaftarAlbum, SetDaftarPenyanyi, SetDaftarUser;
@@ -22,7 +23,7 @@ int userId = 0;
 boolean statusLoad, userLogin = false; 
 void readCommand(int status){
   statusRun = status;
-  
+  srand(42);
   SetWord(&path, "../save/");
   // Construct Set 
   CreateSet(&SetDaftarAlbum);
@@ -236,21 +237,30 @@ void readCommand(int status){
       ADVWORD();
       if(compareString("HISTORY", currentWord.TabWord)){
         PrepModelHistory();
-        giveRecommend();
       }
       else if(compareString("PLAYLIST", currentWord.TabWord)){
-        START();
-        printf("Masukkan nama Playlist : "); 
-        Word userInput = takeInput();
-        if(IsMemberPlaylist(MapPlaylist, userInput)){
-          PrepModelPlaylist(userInput);
-          giveRecommend();
+        if(MapPlaylist.Count == 0 ){
+          printf("User tidak memiliki playlist\n");
         }
         else{
-          printf("Playlist dengan nama %s tidak ada \n",userInput.TabWord);
+          START();
+          printf("Daftar Playlist : \n");
+          for(int i = 0; i <MapPlaylist.Count; i++){
+            printf("%d. %s\n", i+1, MapPlaylist.Elements[i].Key.TabWord);
+          }
+          printf("Masukkan nama Playlist : "); 
+          Word userInput = takeInput();
+          if(IsMemberPlaylist(MapPlaylist, userInput)){
+            PrepModelPlaylist(userInput);
+          }
+
+          else{
+            printf("Playlist dengan nama %s tidak ada \n",userInput.TabWord);
+          }
         }
       }
     }
+
     else if(compareString("PLAY", currentWord.TabWord)){
       ADVWORD();
       if(compareString(currentWord.TabWord, "SONG")){
@@ -278,24 +288,51 @@ void PrepModelPlaylist(Word Key){
     for(int j = 0 ; j< MAX_FEATURES; j++){
       data[i].features[j] =  DaftarLagu.A[i].Features[j];
     }
+    data[i].label = 0; 
   }
 
   for(int i = 0; i< Length(DaftarLagu); i++){
     addressLinkedList p = test.First; 
+    data[i].label = 0 ;
     while(p != Nil_LL){
       if(CompareLagu(p->info, DaftarLagu.A[i])){
         data[i].label = 1;
-        p = p->next;
         break;
       }
+      p = p->next;
     }
   }
 
   initializeModel(&model, MAX_FEATURES);
   trainModel(data, Length(DaftarLagu), MAX_FEATURES, &model);
+
+
+  double arrRes[Length(DaftarLagu)];
+    for(int i =0; i<Length(DaftarLagu); i++){
+      if(!CompareLagu(DaftarLagu.A[i], currentPlaying)){
+        arrRes[i] = predictModel(DaftarLagu.A[i].Features, model, MAX_FEATURES);
+      }
+      else{
+        arrRes[i] =0;
+      }
+    }
+    int maxIndex =0; 
+    for(int i =0; i < Length(DaftarLagu); i++){
+      if(arrRes[i] > arrRes[maxIndex]) maxIndex = i; 
+    }
+
+    if(arrRes[maxIndex] < 0.005){
+      printf("Playlist Kosong, akan diberikan rekomendasi random\n");
+      maxIndex = rand() % Length(DaftarLagu) + 1;
+    }
+    //for(int i =0; i< Length(DaftarLagu); i++){
+    //  printf("Index %d : %d\n", i,  userHist[i]);
+    //}
+    printf("Lagu Berdasarkan Playlist \e[1;32m%s\e[m : \e[1;32m%s - %s - %s\e[m,Skor : %.3f \n", Key.TabWord, DaftarLagu.A[maxIndex].Penyanyi.TabWord,DaftarLagu.A[maxIndex].Album.TabWord, DaftarLagu.A[maxIndex].Judul.TabWord, arrRes[maxIndex]);
 }
 
 void PrepModelHistory(){
+  UpdateHistory();
   DataPoint data[Length(DaftarLagu)];
   for(int i =0; i < Length(DaftarLagu); i++){
     for(int j = 0; j < MAX_FEATURES; j++){
@@ -307,29 +344,35 @@ void PrepModelHistory(){
   // Initialize Model
   initializeModel(&model, MAX_FEATURES);
   trainModel(data, Length(DaftarLagu), MAX_FEATURES, &model);
-}
 
-void giveRecommend(){
+
   double arrRes[Length(DaftarLagu)];
-  for(int i =0; i<Length(DaftarLagu); i++){
-    if(!CompareLagu(DaftarLagu.A[i], currentPlaying) && userHist[i] != 1){
-      arrRes[i] = predictModel(DaftarLagu.A[i].Features, model, MAX_FEATURES);
+    for(int i =0; i<Length(DaftarLagu); i++){
+      if(!CompareLagu(DaftarLagu.A[i], currentPlaying) && userHist[i] != 1){
+        arrRes[i] = predictModel(DaftarLagu.A[i].Features, model, MAX_FEATURES);
+      }
+      else{
+        arrRes[i] =0;
+      }
     }
-    else{
-      arrRes[i] =0;
+    int maxIndex =0; 
+    boolean found =false; 
+    for(int i =0; i < Length(DaftarLagu); i++){
+      if(arrRes[i] > arrRes[maxIndex]) maxIndex = i; 
+      //Checking User's Record 
+      if(userHist[i] != 0){
+        found = true; 
+      }
     }
-  }
-  int maxIndex =0; 
-  for(int i =0; i < Length(DaftarLagu); i++){
-    if(arrRes[i] > arrRes[maxIndex]) maxIndex = i; 
-  }
-  //for(int i =0; i< Length(DaftarLagu); i++){
-  //  printf("Index %d : %d\n", i,  userHist[i]);
-  //}
-  printf("Lagu Rekomen : %s, %.3f \n", DaftarLagu.A[maxIndex].Judul.TabWord, arrRes[maxIndex]);
-  //for(int i =0; i<MAX_FEATURES; i++){
-  //  printf("%.2f \n", DaftarLagu.A[maxIndex].Features[i]);
-  //}
+    
+    if(!found){
+      printf("User tidak memiliki history, akan direkomendasikan lagu acak\n");
+      maxIndex = rand() % Length(DaftarLagu) + 1;
+    }
+    //for(int i =0; i< Length(DaftarLagu); i++){
+    //  printf("Index %d : %d\n", i,  userHist[i]);
+    //}
+    printf("Lagu yang direkomendasikan : \e[1;32m%s - %s - %s\e[m, Skor : %.3f \n", DaftarLagu.A[maxIndex].Penyanyi.TabWord,DaftarLagu.A[maxIndex].Album.TabWord, DaftarLagu.A[maxIndex].Judul.TabWord, arrRes[maxIndex]);
 }
 
 // Berguna untuk mencatat lagu yang pernah didengar oleh User
@@ -337,7 +380,6 @@ void reUserHist(Lagu target){
   for(int i = 0; i < Length(DaftarLagu); i++){
     if(CompareLagu(DaftarLagu.A[i], target) && userHist[i] != 1){
       userHist[i] = 1;
-      printf("Song : %s \n", target.Judul.TabWord);
     }
   }
 }
@@ -369,6 +411,16 @@ void registerCommand(){
   }
 }
 
+void UpdateHistory(){
+  Stack newStack = StackLagu;
+  while(!IsEmptyStack(newStack)){
+    Lagu song; 
+    Pop(&newStack, &song);
+    reUserHist(song);
+  }
+  if(!IsEmptyLagu(currentPlaying))reUserHist(currentPlaying);
+}
+
 void LoginCommand(){
   currentPlaying = MakeLagu();
   currentPlaying = arrOfLagu[userId];
@@ -377,7 +429,9 @@ void LoginCommand(){
   QueueLagu = arrOfQueue[userId];
   MapPlaylist = arrOfPlaylist[userId];
 
+  UpdateHistory();
 }
+
 void playPlaylist(){
   if(MapPlaylist.Count == 0){
     printf("Tidak ada Playlist yang terdaftar\n");
@@ -408,7 +462,9 @@ void playPlaylist(){
       currentPlaying = MakeLagu();
     }
     else{
+      if(!IsEmptyLagu(currentPlaying))reUserHist(currentPlaying);
       currentPlaying = Info(P);
+      if(!IsEmptyLagu(currentPlaying))reUserHist(currentPlaying);
       Push(&StackLagu, P->info);
       P=Next(P);
     }
@@ -486,8 +542,9 @@ void playSong(){
         newLagu.Album = inputUser2; 
         newLagu.Judul = tempJudul.buffer[indexLagu];
         newLagu.Penyanyi = inputUser;
-
+        if(!IsEmptyLagu(currentPlaying)) reUserHist(currentPlaying);
         currentPlaying = newLagu; 
+        reUserHist(currentPlaying);
         printf("Memutar lagu \"%s\" oleh \"%s\".\n",currentPlaying.Judul.TabWord, currentPlaying.Penyanyi.TabWord);
         queueClear();
         historyClear();
@@ -968,14 +1025,16 @@ void songNext(){
 
   if(!isEmpty(QueueLagu)){
     dequeue(&QueueLagu,&tempLagu);
+    if(!IsEmptyLagu(currentPlaying))reUserHist(currentPlaying);
     if(!IsEmptyLagu(currentPlaying))Push(&StackLagu, currentPlaying);
     currentPlaying = tempLagu; 
+    reUserHist(currentPlaying);
     printf("Memutar lagu selanjutnya\n\"%s \" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
   }
   else{
     if(!IsEmptyLagu(currentPlaying))printf("Queue kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
-    tempLagu = currentPlaying; 
-    if(!IsEmptyLagu(currentPlaying)){
+    tempLagu = currentPlaying;
+    if (!IsEmptyLagu(currentPlaying)) {
       printf("Queue kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
     }
   }
@@ -1019,7 +1078,6 @@ boolean loadSave(char *filePath){
         inputCurrent = takeInput();
         currentPlaying.Judul = inputCurrent;
 
-        reUserHist(currentPlaying);
       }
       else{
         currentPlaying = MakeLagu();
@@ -1100,7 +1158,6 @@ boolean loadSave(char *filePath){
         //Pop(&StackLagu, &testLagu);
         //Push(&StackLagu, newLagu);
         
-        reUserHist(newLagu);
         Lagu testLagu = newLagu;
         //printf("Penyanyi : %s\nAlbum : %s\nJudul : %s\n\n", testLagu.Penyanyi.TabWord, testLagu.Album.TabWord, testLagu.Judul.TabWord);
       }
