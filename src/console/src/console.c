@@ -1,6 +1,4 @@
 #include "console.h"
-#include <stdio.h>
-#include <time.h>
 //Global Variable 
 Queue QueueLagu; 
 SetOfWord SetDaftarAlbum, SetDaftarPenyanyi, SetDaftarUser;
@@ -16,12 +14,15 @@ Playlist arrOfPlaylist[MaxUser];
 Queue arrOfQueue[MaxUser];
 Lagu arrOfLagu[MaxUser];
 
+Word path;
 int statusRun = 0; 
 int idxLagu = 0;
 int userId = 0; 
 boolean statusLoad, userLogin = false; 
 void readCommand(int status){
   statusRun = status;
+  
+  SetWord(&path, "../save/");
   // Construct Set 
   CreateSet(&SetDaftarAlbum);
   CreateSet(&SetDaftarPenyanyi);
@@ -57,9 +58,10 @@ void readCommand(int status){
         printf("Sesi sudah berjalan \n");
         continue;
       }
-      char path[120] = "../save/defSave.txt";
-      boolean success = loadSave(path);
+      char tempPath[120] = "../save/defSave.txt";
+      boolean success = loadSave(tempPath);
       if(success){
+        SetWord(&path, tempPath);
         printf("START berhasil dijalankan\n");
         masukSesi = true; 
         statusEnter = true;
@@ -76,13 +78,14 @@ void readCommand(int status){
         printf("Sesi sudah berjalan \n");
         continue;
       }
-      char path[120] = "../save/";
+      char tempPath[120] ="../save/"; 
       for(int i =0; i< currentWord.Length; i++){
-        path[i + 8] = currentWord.TabWord[i]; 
+        tempPath[i + 8] = currentWord.TabWord[i]; 
       }
-      boolean success = loadSave(path);
+      boolean success = loadSave(tempPath);
       if (success){
-        printf("File konfigurasi '%s' aplikasi berhasil dibaca. Wayangwave berhasil dijalankan\n", path);
+        SetWord(&path, tempPath);
+        printf("File konfigurasi '%s' aplikasi berhasil dibaca. Wayangwave berhasil dijalankan\n", tempPath);
         masukSesi = true;
         statusEnter = true; 
       }
@@ -175,6 +178,8 @@ void readCommand(int status){
     }
     else if(compareString("QUIT", currentWord.TabWord)){
       quitCommand(&stopStatus);
+      statusLoad = true;
+      exit(0);
     }
     else if(compareString("LIST", currentWord.TabWord)){
       listCommand();
@@ -863,14 +868,15 @@ void songPrev(){
 }
 void songNext(){
   Lagu tempLagu; 
-  
+
   if(!isEmpty(QueueLagu)){
     dequeue(&QueueLagu,&tempLagu);
-    Push(&StackLagu, currentPlaying);
+    if(!IsEmptyLagu(currentPlaying))Push(&StackLagu, currentPlaying);
     currentPlaying = tempLagu; 
     printf("Memutar lagu selanjutnya\n\"%s \" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
   }
   else{
+    if(!IsEmptyLagu(currentPlaying))printf("Queue kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
     tempLagu = currentPlaying; 
     if(!IsEmptyLagu(currentPlaying)){
       printf("Queue kosong, memutar kembali lagu\n\"%s\" oleh \"%s\"\n",tempLagu.Judul.TabWord, tempLagu.Penyanyi.TabWord);
@@ -1199,7 +1205,7 @@ void saveCommand(boolean Quit){
     ConcatWord(currentWord,&filePath);
   }
   else{
-    SetWord(&filePath, "../save/defSave.txt");
+    SetWord(&filePath, path.TabWord);
   }
   printf("%s\n",filePath.TabWord);
   FILE *file = fopen(filePath.TabWord, "w");

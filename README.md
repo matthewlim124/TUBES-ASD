@@ -4,7 +4,7 @@ Membuat "WayangWave"
 ## Anggota K01-Kelompok 10
 1. Zafran Divac Azzahra (18220079) <br />
 2. Matthew Lim	(18222005) <br />
-3. Aththariq Lisan Q. D. S.(18222013) <br />
+3. Aththariq Lisan Q. D. S. (18222013) <br />
 4. Christopher Richard Chandra	(18222057) <br />
 5. Winata Tristan (18222061) <br />
 
