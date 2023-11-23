@@ -9,7 +9,7 @@
 #include "../../ADT/StackLagu/stack.h"
 #include "../../ADT/MapWord/map.h"
 #include "../../ADT/Playlist/playlist.h"
-#include "../../recSys.h"
+#include "../../DecTree.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -18,6 +18,7 @@
 
 #define MaxUser 102
 
+void CleanHistory();
 void UpdateHistory();
 void PrepModelPlaylist(Word Key);
 void PrepModelHistory();

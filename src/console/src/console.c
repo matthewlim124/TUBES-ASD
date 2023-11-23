@@ -14,7 +14,6 @@ Stack arrOfStack[MaxUser];
 Playlist arrOfPlaylist[MaxUser];
 Queue arrOfQueue[MaxUser];
 Lagu arrOfLagu[MaxUser];
-LogisticRegressionModel model;
 
 Word path;
 int statusRun = 0; 
@@ -282,97 +281,119 @@ void readCommand(int status){
 void PrepModelPlaylist(Word Key){
   //Rewrite daftarlagu with features 
   LinkedList test = ValuePlaylist(MapPlaylist, Key);
-
-  DataPoint data[Length(DaftarLagu)];
+  double features[Length(DaftarLagu)][NUM_FEATURES];
+  int labels[100];
   for(int i = 0; i< Length(DaftarLagu); i++){
-    for(int j = 0 ; j< MAX_FEATURES; j++){
-      data[i].features[j] =  DaftarLagu.A[i].Features[j];
+    for(int j = 0 ; j< NUM_FEATURES; j++){
+      features[i][j] =  DaftarLagu.A[i].Features[j];
     }
-    data[i].label = 0; 
+    labels[i] = 0; 
   }
 
   for(int i = 0; i< Length(DaftarLagu); i++){
     addressLinkedList p = test.First; 
-    data[i].label = 0 ;
     while(p != Nil_LL){
       if(CompareLagu(p->info, DaftarLagu.A[i])){
-        data[i].label = 1;
+        labels[i]= 1;
         break;
       }
       p = p->next;
     }
   }
-
-  initializeModel(&model, MAX_FEATURES);
-  trainModel(data, Length(DaftarLagu), MAX_FEATURES, &model);
+  TreeNode* root = train(features, labels, Length(DaftarLagu), NUM_FEATURES);
 
 
-  double arrRes[Length(DaftarLagu)];
+  int arrRes[Length(DaftarLagu)];
     for(int i =0; i<Length(DaftarLagu); i++){
       if(!CompareLagu(DaftarLagu.A[i], currentPlaying)){
-        arrRes[i] = predictModel(DaftarLagu.A[i].Features, model, MAX_FEATURES);
+        arrRes[i] = predict(root,DaftarLagu.A[i].Features);
       }
       else{
         arrRes[i] =0;
       }
     }
-    int maxIndex =0; 
+   
+    int count =0; 
     for(int i =0; i < Length(DaftarLagu); i++){
-      if(arrRes[i] > arrRes[maxIndex]) maxIndex = i; 
+      if(arrRes[i]){
+        count++; 
+      } 
     }
 
-    if(arrRes[maxIndex] < 0.005){
+    if(count ==0){
       printf("Playlist Kosong, akan diberikan rekomendasi random\n");
-      maxIndex = rand() % Length(DaftarLagu) + 1;
+      int songIndex = rand() % Length(DaftarLagu);
+      printf("Lagu Berdasarkan Playlist \e[1;32m%s\e[m : %s - %s - %s\n", Key.TabWord, DaftarLagu.A[songIndex].Penyanyi.TabWord,DaftarLagu.A[songIndex].Album.TabWord, DaftarLagu.A[songIndex].Judul.TabWord);
+    return; 
     }
-    //for(int i =0; i< Length(DaftarLagu); i++){
-    //  printf("Index %d : %d\n", i,  userHist[i]);
-    //}
-    printf("Lagu Berdasarkan Playlist \e[1;32m%s\e[m : \e[1;32m%s - %s - %s\e[m,Skor : %.3f \n", Key.TabWord, DaftarLagu.A[maxIndex].Penyanyi.TabWord,DaftarLagu.A[maxIndex].Album.TabWord, DaftarLagu.A[maxIndex].Judul.TabWord, arrRes[maxIndex]);
+
+    count =0; 
+    printf("Rekomendasi Lagu Berdasarkan Playlist \e[1;32m%s\e[m: \n", Key.TabWord);
+    for(int i =0; i< Length(DaftarLagu); i++ && count < 3){
+      if(arrRes[i]){
+        printf("%d. %s - %s - %s\n", count+1, DaftarLagu.A[i].Penyanyi.TabWord,DaftarLagu.A[i].Album.TabWord, DaftarLagu.A[i].Judul.TabWord);
+        count++;
+      }
+    }
 }
 
 void PrepModelHistory(){
-  UpdateHistory();
-  DataPoint data[Length(DaftarLagu)];
+
+  double features[Length(DaftarLagu)][NUM_FEATURES];
+  int labels[100];
+  
   for(int i =0; i < Length(DaftarLagu); i++){
-    for(int j = 0; j < MAX_FEATURES; j++){
-      data[i].features[j] = DaftarLagu.A[i].Features[j];
-      data[i].label = userHist[i]; 
+    for(int j = 0; j < NUM_FEATURES; j++){
+      features[i][j] = DaftarLagu.A[i].Features[j];
+      labels[i] = userHist[i]; 
     }
   }
   
   // Initialize Model
-  initializeModel(&model, MAX_FEATURES);
-  trainModel(data, Length(DaftarLagu), MAX_FEATURES, &model);
+  TreeNode* root = train(features, labels, Length(DaftarLagu), NUM_FEATURES);
 
-
-  double arrRes[Length(DaftarLagu)];
+  int arrRes[Length(DaftarLagu)];
     for(int i =0; i<Length(DaftarLagu); i++){
       if(!CompareLagu(DaftarLagu.A[i], currentPlaying) && userHist[i] != 1){
-        arrRes[i] = predictModel(DaftarLagu.A[i].Features, model, MAX_FEATURES);
+        arrRes[i] = predict(root,DaftarLagu.A[i].Features);
       }
       else{
         arrRes[i] =0;
       }
     }
-    int maxIndex =0; 
     boolean found =false; 
     for(int i =0; i < Length(DaftarLagu); i++){
-      if(arrRes[i] > arrRes[maxIndex]) maxIndex = i; 
       //Checking User's Record 
       if(userHist[i] != 0){
-        found = true; 
+        found = true;
+        break; 
+      }
+
+    }
+
+    int count =0; 
+    for(int i =0; i < Length(DaftarLagu); i++){
+      if(arrRes[i] == 1){
+        count++; 
+      } 
+    }
+
+    if(!found){
+      printf("History User Kosong, akan diberikan rekomendasi random\n");
+      int songIndex = rand() % Length(DaftarLagu);
+      printf("Lagu Rekomendasi : \e[1;32m%s - %s - %s\e[m\n", DaftarLagu.A[songIndex].Penyanyi.TabWord,DaftarLagu.A[songIndex].Album.TabWord, DaftarLagu.A[songIndex].Judul.TabWord);
+      return; 
+    }
+
+    count =0; 
+    printf("Rekomendasi Lagu Berdasarkan History : \n");
+    for(int i =0; i< Length(DaftarLagu); i++ && count < 3){
+      if(arrRes[i]){
+        printf("%d. %s - %s - %s\n", count+1, DaftarLagu.A[i].Penyanyi.TabWord,DaftarLagu.A[i].Album.TabWord, DaftarLagu.A[i].Judul.TabWord);
+        count++;
       }
     }
-    
-    if(!found){
-      printf("User tidak memiliki history, akan direkomendasikan lagu acak\n");
-      maxIndex = rand() % Length(DaftarLagu) + 1;
-    }
-    //for(int i =0; i< Length(DaftarLagu); i++){
-    //  printf("Index %d : %d\n", i,  userHist[i]);
-    //}
-    printf("Lagu yang direkomendasikan : \e[1;32m%s - %s - %s\e[m, Skor : %.3f \n", DaftarLagu.A[maxIndex].Penyanyi.TabWord,DaftarLagu.A[maxIndex].Album.TabWord, DaftarLagu.A[maxIndex].Judul.TabWord, arrRes[maxIndex]);
+
 }
 
 // Berguna untuk mencatat lagu yang pernah didengar oleh User
@@ -421,6 +442,12 @@ void UpdateHistory(){
   if(!IsEmptyLagu(currentPlaying))reUserHist(currentPlaying);
 }
 
+void CleanHistory(){
+  for(int i =0; i< 100; i++){
+    userHist[i] = 0; 
+  }
+}
+
 void LoginCommand(){
   currentPlaying = MakeLagu();
   currentPlaying = arrOfLagu[userId];
@@ -428,7 +455,7 @@ void LoginCommand(){
   StackLagu = arrOfStack[userId];
   QueueLagu = arrOfQueue[userId];
   MapPlaylist = arrOfPlaylist[userId];
-
+  CleanHistory();
   UpdateHistory();
 }
 

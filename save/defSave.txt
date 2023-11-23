@@ -29,12 +29,13 @@ Arabella
 bandung bondowoso
 rorojonggrang_
 Arctic Monkeys;Favourite Worst Nightmare;505
-5
+6
 BLACKPINK;BORN PINK;Typa Girl
 BLACKPINK;THE ALBUM;How You Like That
 Arctic Monkeys;AM;Do I Wanna Know?
 BLACKPINK;BORN PINK;Shut Down
 Arctic Monkeys;AM;Arabella
+Arctic Monkeys;Favourite Worst Nightmare;505
 0
 3
 3 BLACKPINK My Top Three
