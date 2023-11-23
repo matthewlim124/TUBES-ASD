@@ -8,9 +8,6 @@ int main() {
     // Contoh penggunaan IgnoreBlanks
     IgnoreBlanks();
 
-    // Contoh penggunaan cleanWORD
-    cleanWORD();
-
     // Contoh penggunaan ADVWORD
     ADVWORD();
 
