@@ -31,5 +31,7 @@ menyimpan data "state" (lagu yang sedang diputar, urutan lagu saat itu, playlist
 ![100%](https://progress-bar.dev/100?title=Save)
 ![100%](https://progress-bar.dev/100?title=MultiUser)
 
-# Cara kompilasi
-Klik main.bat yang terdapat di folder src. Setelah selesai dikompilasi, kilk main.exe untuk menjalankan WayangWave.
+![100%](https://progress-bar.dev/100?title=Enhance+Tree)
+
+## Status
+Bug Checking in Progress... 

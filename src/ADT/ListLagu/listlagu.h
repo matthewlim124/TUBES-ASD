@@ -11,6 +11,6 @@ void MakeListLagu(ListLagu *l);
 
 int Length(ListLagu l); 
 
-void set(ListLagu *l , int idx, Lagu a);
+void Set(ListLagu *l , int idx, Lagu a);
 
 #endif

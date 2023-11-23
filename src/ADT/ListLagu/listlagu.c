@@ -16,6 +16,6 @@ int Length(ListLagu l){
   return i;
 }
 
-void set(ListLagu *l, int idx, Lagu a){
+void Set(ListLagu *l, int idx, Lagu a){
   l->A[idx] = a; 
 }
