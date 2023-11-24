@@ -113,6 +113,7 @@ void readCommand(int status){
         printf("7. HELP -> Untuk menampilkan menu help\n");
         printf("8. SAVE -> Untuk menyimpan state ke dalam file\n");
         printf("9. QUIT -> Untuk keluar dari sesi\n");
+        printf("10. ENHANCE -> Untuk mendapatkan rekomendasi langsung ke playlist atau berdasarkan riwayat lagu.\n");
       }
     }
 
@@ -845,7 +846,7 @@ void playlistAddSong(){
         printf("\n");
         int Index = WordToInt(currentWord) -1;
         if(MapPlaylist.Elements[Index].Key.Length == 0){
-          printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.", Index);
+          printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.\n", Index + 1);
         }else{
           if(Search(MapPlaylist.Elements[Index].Value, newLagu) == Nil_LL){
             InsVLast(&MapPlaylist.Elements[Index].Value, newLagu);
