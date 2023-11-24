@@ -2,7 +2,7 @@
 #include <stdio.h>
 void MakeListLagu(ListLagu *l){
   Lagu newLagu = MakeLagu();
-  for(int i =0; i<50;i++){
+  for(int i =0; i<MAX_ListLagu;i++){
     l->A[i] = newLagu;
   }
 }

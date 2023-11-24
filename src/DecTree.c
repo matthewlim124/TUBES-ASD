@@ -75,9 +75,6 @@ TreeNode* train(double features[][MAX_FEATURES], int* labels, int numSamples, in
       uniqueLabelCount++; 
       uniqueLabel = labels[i];
     }
-    else{
-      break;
-    }
   }
   
   if(uniqueLabelCount == 1){

@@ -2,9 +2,9 @@
 #define LISTLAGU_H
 
 #include "../Lagu/lagu.h"
-
+#define MAX_ListLagu 300
 typedef struct{
-  Lagu A[50];
+  Lagu A[MAX_ListLagu];
 }ListLagu;
 
 void MakeListLagu(ListLagu *l); 

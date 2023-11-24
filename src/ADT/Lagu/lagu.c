@@ -6,6 +6,9 @@ Lagu MakeLagu(){
     MakeWord(&newLagu.Album);
     MakeWord(&newLagu.Judul);
     MakeWord(&newLagu.Penyanyi);
+    for(int i =0; i<NUM_FEATURES; i++){
+      newLagu.Features[i] = 0; 
+    }
     return newLagu;
 }
 boolean IsEmptyLagu(Lagu a){

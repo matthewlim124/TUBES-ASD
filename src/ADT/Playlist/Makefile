@@ -8,4 +8,4 @@ all:
 	$(CC) $(SOURCE2) -o $(TARGET2)
 	@echo "Build finished. Run './$(TARGET) dan ./$(TARGET2)' to execute."
 clean:
-	rm $(TARGET)
+	rm $(TARGET) $(TARGET2)

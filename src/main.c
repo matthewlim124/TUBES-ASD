@@ -27,7 +27,6 @@ int main(){
   while(!sEnd){
     readCommand(stat); 
   }
-  
 }
 
 

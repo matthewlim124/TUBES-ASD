@@ -12,7 +12,7 @@ Deklarasi stack yang dengan implementasi array eksplisit-statik rata kiri
 // #define false 0
 // #define true 1
 #define NilMap 0 
-#define MaxElMapPlaylist 100
+#define MaxElMapPlaylist 500
 
 // typedef int bool;
 typedef LinkedList IsiPlaylist;
