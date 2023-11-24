@@ -815,7 +815,7 @@ void playlistAddSong(){
         printf("\n");
         int Index = WordToInt(currentWord) -1;
         if(MapPlaylist.Elements[Index].Key.Length == 0){
-          printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.", Index);
+          printf("Tidak ada playlist dengan ID %d dalam daftar playlist pengguna. Silakan coba lagi.\n", Index + 1);
         }else{
           if(Search(MapPlaylist.Elements[Index].Value, newLagu) == Nil_LL){
             InsVLast(&MapPlaylist.Elements[Index].Value, newLagu);
